@@ -38,7 +38,9 @@ export interface Project {
   name: string;
   role: string;
   technologies: string[];
-  link: string;
+  link?: string;
+  githubLink?: string;
+  liveLink?: string;
   description: string[];
 }
 
@@ -149,7 +151,8 @@ export const SAMPLE_RESUME_DATA: ResumeData = {
       name: 'OpenTracker',
       role: 'Creator & Lead Developer',
       technologies: ['Next.js', 'TypeScript', 'Prisma', 'PostgreSQL'],
-      link: 'github.com/alexjohnson/opentracker',
+      githubLink: 'github.com/alexjohnson/opentracker',
+      liveLink: 'opentracker.dev',
       description: [
         'Built an open-source project management tool with real-time collaboration features, garnering 2.5K+ GitHub stars.',
         'Implemented WebSocket-based live editing with conflict resolution using CRDTs.',
@@ -160,7 +163,8 @@ export const SAMPLE_RESUME_DATA: ResumeData = {
       name: 'AI Resume Analyzer',
       role: 'Solo Developer',
       technologies: ['Python', 'FastAPI', 'OpenAI API', 'React'],
-      link: 'github.com/alexjohnson/ai-resume',
+      githubLink: 'github.com/alexjohnson/ai-resume',
+      liveLink: '',
       description: [
         'Created an AI-powered resume analysis tool that provides personalized suggestions for improving resume content and formatting.',
         'Integrated NLP models for keyword extraction and job description matching with 92% accuracy.',

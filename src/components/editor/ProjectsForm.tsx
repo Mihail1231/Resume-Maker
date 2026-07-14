@@ -86,15 +86,27 @@ export default function ProjectsForm() {
                 onChange={(e) => updateProject(proj.id, 'role', e.target.value)}
               />
             </div>
-            <div className="md:col-span-2">
-              <label className="input-label">Project Link (optional)</label>
-              <input
-                type="text"
-                className="input-field"
-                placeholder="github.com/user/project"
-                value={proj.link}
-                onChange={(e) => updateProject(proj.id, 'link', e.target.value)}
-              />
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label className="input-label">GitHub Link (optional)</label>
+                <input
+                  type="text"
+                  className="input-field"
+                  placeholder="github.com/user/project"
+                  value={proj.githubLink || ''}
+                  onChange={(e) => updateProject(proj.id, 'githubLink', e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="input-label">Live View Link (optional)</label>
+                <input
+                  type="text"
+                  className="input-field"
+                  placeholder="project.vercel.app"
+                  value={proj.liveLink || ''}
+                  onChange={(e) => updateProject(proj.id, 'liveLink', e.target.value)}
+                />
+              </div>
             </div>
           </div>
 

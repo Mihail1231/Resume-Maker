@@ -231,6 +231,8 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
       role: '',
       technologies: [],
       link: '',
+      githubLink: '',
+      liveLink: '',
       description: [''],
     };
     setResumeData((prev) => ({
