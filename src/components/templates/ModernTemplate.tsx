@@ -23,6 +23,14 @@ export default function ModernTemplate({ data, s }: TemplateProps) {
     }
   };
 
+  const getFullUrl = (url: string) => {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('mailto:') || url.startsWith('tel:')) {
+      return url;
+    }
+    return `https://${url}`;
+  };
+
   return (
     <div className="flex flex-col h-full text-slate-800">
       {/* Header section with top accent bar */}
@@ -74,8 +82,15 @@ export default function ModernTemplate({ data, s }: TemplateProps) {
             <ul className="space-y-2 text-slate-600" style={{ fontSize: s.textBase }}>
               {personalInfo.email && (
                 <li className="flex items-center gap-2">
-                  <Mail className="w-3.5 h-3.5 shrink-0 text-slate-400" />
-                  <span className="truncate">{personalInfo.email}</span>
+                  <a
+                    href={`mailto:${personalInfo.email}`}
+                    className="flex items-center gap-2 hover:text-slate-900 transition-colors truncate w-full"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Mail className="w-3.5 h-3.5 shrink-0 text-slate-400" />
+                    <span className="truncate">{personalInfo.email}</span>
+                  </a>
                 </li>
               )}
               {personalInfo.phone && (
@@ -92,20 +107,41 @@ export default function ModernTemplate({ data, s }: TemplateProps) {
               )}
               {personalInfo.website && (
                 <li className="flex items-center gap-2">
-                  <Globe className="w-3.5 h-3.5 shrink-0 text-slate-400" />
-                  <span className="truncate">{personalInfo.website}</span>
+                  <a
+                    href={getFullUrl(personalInfo.website)}
+                    className="flex items-center gap-2 hover:text-slate-900 transition-colors truncate w-full"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Globe className="w-3.5 h-3.5 shrink-0 text-slate-400" />
+                    <span className="truncate">{personalInfo.website}</span>
+                  </a>
                 </li>
               )}
               {personalInfo.linkedin && (
                 <li className="flex items-center gap-2">
-                  <Linkedin className="w-3.5 h-3.5 shrink-0 text-slate-400" />
-                  <span className="truncate">{personalInfo.linkedin}</span>
+                  <a
+                    href={getFullUrl(personalInfo.linkedin)}
+                    className="flex items-center gap-2 hover:text-slate-900 transition-colors truncate w-full"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Linkedin className="w-3.5 h-3.5 shrink-0 text-slate-400" />
+                    <span className="truncate">{personalInfo.linkedin}</span>
+                  </a>
                 </li>
               )}
               {personalInfo.github && (
                 <li className="flex items-center gap-2">
-                  <Github className="w-3.5 h-3.5 shrink-0 text-slate-400" />
-                  <span className="truncate">{personalInfo.github}</span>
+                  <a
+                    href={getFullUrl(personalInfo.github)}
+                    className="flex items-center gap-2 hover:text-slate-900 transition-colors truncate w-full"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Github className="w-3.5 h-3.5 shrink-0 text-slate-400" />
+                    <span className="truncate">{personalInfo.github}</span>
+                  </a>
                 </li>
               )}
             </ul>
@@ -263,13 +299,47 @@ export default function ModernTemplate({ data, s }: TemplateProps) {
                           <div key={proj.id} className="resume-entry">
                             <div className="flex items-start justify-between">
                               <div>
-                                <h4 className="font-bold text-slate-800 flex items-center gap-1.5" style={{ fontSize: s.textLg }}>
-                                  {proj.name}
-                                  {proj.link && (
-                                    <span className="text-xs font-normal text-slate-400 lowercase">
-                                      ({proj.link})
-                                    </span>
-                                  )}
+                                <h4 className="font-bold text-slate-800 flex items-center gap-2 flex-wrap" style={{ fontSize: s.textLg }}>
+                                  <span>{proj.name}</span>
+                                  <div className="flex items-center gap-2">
+                                    {proj.githubLink && (
+                                      <a
+                                        href={getFullUrl(proj.githubLink)}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-1 text-slate-400 hover:text-slate-600 transition-colors text-xs font-normal"
+                                      >
+                                        <Github className="w-3.5 h-3.5 shrink-0 text-slate-500" />
+                                        <span className="hover:underline text-[11px] font-medium text-slate-500">GitHub</span>
+                                      </a>
+                                    )}
+                                    {proj.liveLink && (
+                                      <a
+                                        href={getFullUrl(proj.liveLink)}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-1 text-slate-400 hover:text-slate-600 transition-colors text-xs font-normal"
+                                      >
+                                        <Globe className="w-3.5 h-3.5 shrink-0 text-slate-500" />
+                                        <span className="hover:underline text-[11px] font-medium text-slate-500">Live View</span>
+                                      </a>
+                                    )}
+                                    {!proj.githubLink && !proj.liveLink && proj.link && (
+                                      <a
+                                        href={getFullUrl(proj.link)}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-1 text-slate-400 hover:text-slate-600 transition-colors text-xs font-normal"
+                                      >
+                                        {proj.link.toLowerCase().includes('github') ? (
+                                          <Github className="w-3.5 h-3.5 shrink-0 text-slate-500" />
+                                        ) : (
+                                          <Globe className="w-3.5 h-3.5 shrink-0 text-slate-500" />
+                                        )}
+                                        <span className="hover:underline text-[11px] font-medium text-slate-500">{proj.link}</span>
+                                      </a>
+                                    )}
+                                  </div>
                                 </h4>
                                 <span className="text-slate-600 font-medium" style={{ fontSize: s.textBase }}>
                                   {proj.role}

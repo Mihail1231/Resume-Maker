@@ -22,15 +22,23 @@ export default function ExecutiveTemplate({ data, s }: TemplateProps) {
     }
   };
 
+  const getFullUrl = (url: string) => {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('mailto:') || url.startsWith('tel:')) {
+      return url;
+    }
+    return `https://${url}`;
+  };
+
   // Helper for contact details line
   const contactItems = [
-    personalInfo.email && { label: personalInfo.email, icon: Mail },
+    personalInfo.email && { label: personalInfo.email, icon: Mail, href: `mailto:${personalInfo.email}` },
     personalInfo.phone && { label: personalInfo.phone, icon: Phone },
     personalInfo.location && { label: personalInfo.location, icon: MapPin },
-    personalInfo.website && { label: personalInfo.website, icon: Globe },
-    personalInfo.linkedin && { label: personalInfo.linkedin, icon: Linkedin },
-    personalInfo.github && { label: personalInfo.github, icon: Github },
-  ].filter(Boolean) as { label: string; icon: any }[];
+    personalInfo.website && { label: personalInfo.website, icon: Globe, href: getFullUrl(personalInfo.website) },
+    personalInfo.linkedin && { label: personalInfo.linkedin, icon: Linkedin, href: getFullUrl(personalInfo.linkedin) },
+    personalInfo.github && { label: personalInfo.github, icon: Github, href: getFullUrl(personalInfo.github) },
+  ].filter(Boolean) as { label: string; icon: any; href?: string }[];
 
   const renderedGroupedSkills = { current: false };
 
@@ -105,15 +113,47 @@ export default function ExecutiveTemplate({ data, s }: TemplateProps) {
             <div className={s.entryGap}>
               {projects.map((proj) => (
                 <div key={proj.id} className="resume-entry">
-                  <div className="flex items-baseline justify-between mb-1">
-                    <div>
+                  <div className="flex items-baseline justify-between mb-1 flex-wrap gap-x-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-bold text-slate-800" style={{ fontSize: s.textLg }}>
                         {proj.name}
                       </span>
-                      {proj.link && (
-                        <span className="text-xs text-slate-400 ml-2 lowercase italic">
-                          ({proj.link})
-                        </span>
+                      {proj.githubLink && (
+                        <a
+                          href={getFullUrl(proj.githubLink)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-slate-400 hover:text-slate-600 transition-colors text-xs font-normal"
+                        >
+                          <Github className="w-3.5 h-3.5 shrink-0 text-slate-500" />
+                          <span className="hover:underline text-[11px] font-medium text-slate-500">GitHub</span>
+                        </a>
+                      )}
+                      {proj.liveLink && (
+                        <a
+                          href={getFullUrl(proj.liveLink)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-slate-400 hover:text-slate-600 transition-colors text-xs font-normal"
+                        >
+                          <Globe className="w-3.5 h-3.5 shrink-0 text-slate-500" />
+                          <span className="hover:underline text-[11px] font-medium text-slate-500">Live View</span>
+                        </a>
+                      )}
+                      {!proj.githubLink && !proj.liveLink && proj.link && (
+                        <a
+                          href={getFullUrl(proj.link)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-slate-400 hover:text-slate-600 transition-colors text-xs font-normal"
+                        >
+                          {proj.link.toLowerCase().includes('github') ? (
+                            <Github className="w-3.5 h-3.5 shrink-0 text-slate-500" />
+                          ) : (
+                            <Globe className="w-3.5 h-3.5 shrink-0 text-slate-500" />
+                          )}
+                          <span className="hover:underline text-[11px] font-medium text-slate-500">{proj.link}</span>
+                        </a>
                       )}
                     </div>
                     <span className="font-semibold text-slate-600 shrink-0" style={{ fontSize: s.textBase }}>
@@ -253,15 +293,33 @@ export default function ExecutiveTemplate({ data, s }: TemplateProps) {
         
         {/* Contact info list with bullet separators */}
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-slate-500 font-medium max-w-2xl mx-auto" style={{ fontSize: s.textBase }}>
-          {contactItems.map((item, idx) => (
-            <div key={idx} className="flex items-center gap-1.5">
-              <item.icon className="w-3.5 h-3.5 shrink-0 text-slate-400" />
-              <span>{item.label}</span>
-              {idx < contactItems.length - 1 && (
-                <span className="text-slate-300 ml-2 select-none">&bull;</span>
-              )}
-            </div>
-          ))}
+          {contactItems.map((item, idx) => {
+            const content = (
+              <>
+                <item.icon className="w-3.5 h-3.5 shrink-0 text-slate-400" />
+                <span>{item.label}</span>
+              </>
+            );
+            return (
+              <div key={idx} className="flex items-center gap-1.5">
+                {item.href ? (
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 hover:text-slate-800 transition-colors"
+                  >
+                    {content}
+                  </a>
+                ) : (
+                  content
+                )}
+                {idx < contactItems.length - 1 && (
+                  <span className="text-slate-300 ml-2 select-none">&bull;</span>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
