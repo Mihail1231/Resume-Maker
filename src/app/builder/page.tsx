@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import Link from 'next/link';
+import StaticLink from '@/components/ui/StaticLink';
 import { ResumeProvider, useResume } from '@/context/ResumeContext';
 import PersonalInfoForm from '@/components/editor/PersonalInfoForm';
 import ExperienceForm from '@/components/editor/ExperienceForm';
@@ -234,6 +234,7 @@ function BuilderWorkspace() {
     if (file) {
       importJSON(file);
     }
+    e.target.value = '';
   };
 
   const triggerPrint = () => {
@@ -245,14 +246,14 @@ function BuilderWorkspace() {
       {/* Header Toolbar */}
       <header className="h-16 border-b border-border bg-surface-light fixed top-0 left-0 right-0 z-40 px-6 flex items-center justify-between no-print print:hidden glass">
         <div className="flex items-center gap-4">
-          <Link
+          <StaticLink
             href="/"
             className="p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface transition-colors"
             title="Back to Landing Page"
             aria-label="Back to landing page"
           >
             <ArrowLeft className="w-5 h-5" />
-          </Link>
+          </StaticLink>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
               <Target className="w-4.5 h-4.5 text-white" />

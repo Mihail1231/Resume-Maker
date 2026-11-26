@@ -195,7 +195,7 @@ export default function ModernTemplate({ data, s }: TemplateProps) {
                   return (
                     <div key="skills">
                       <h3
-                        className={`font-bold uppercase tracking-wider text-slate-700 border-b border-slate-200 pb-0.5 ${s.headingMargin}`}
+                        className={`font-bold uppercase tracking-wider text-slate-700 border-b border-slate-200 pb-0.5 break-after-avoid resume-section-heading ${s.headingMargin}`}
                         style={{ fontSize: s.fontBase, lineHeight: '1.2' }}
                       >
                         Skills
@@ -227,7 +227,7 @@ export default function ModernTemplate({ data, s }: TemplateProps) {
                   return (
                     <div key="languages">
                       <h3
-                        className={`font-bold uppercase tracking-wider text-slate-700 border-b border-slate-200 pb-0.5 ${s.headingMargin}`}
+                        className={`font-bold uppercase tracking-wider text-slate-700 border-b border-slate-200 pb-0.5 break-after-avoid resume-section-heading ${s.headingMargin}`}
                         style={{ fontSize: s.fontBase, lineHeight: '1.2' }}
                       >
                         Languages
@@ -247,7 +247,7 @@ export default function ModernTemplate({ data, s }: TemplateProps) {
                   return (
                     <div key="certifications">
                       <h3
-                        className={`font-bold uppercase tracking-wider text-slate-700 border-b border-slate-200 pb-0.5 ${s.headingMargin}`}
+                        className={`font-bold uppercase tracking-wider text-slate-700 border-b border-slate-200 pb-0.5 break-after-avoid resume-section-heading ${s.headingMargin}`}
                         style={{ fontSize: s.fontBase, lineHeight: '1.2' }}
                       >
                         Certifications
@@ -297,7 +297,7 @@ export default function ModernTemplate({ data, s }: TemplateProps) {
                   return (
                     <div key="summary">
                       <h3
-                        className={`font-bold uppercase tracking-wider pb-0.5 border-b border-slate-200 ${s.headingMargin}`}
+                        className={`font-bold uppercase tracking-wider pb-0.5 border-b border-slate-200 break-after-avoid resume-section-heading ${s.headingMargin}`}
                         style={{ color: themeColor, fontSize: s.fontBase, lineHeight: '1.2' }}
                       >
                         Profile
@@ -316,14 +316,14 @@ export default function ModernTemplate({ data, s }: TemplateProps) {
                   return (
                     <div key="experience">
                       <h3
-                        className={`font-bold uppercase tracking-wider pb-0.5 border-b border-slate-200 ${s.headingMargin}`}
+                        className={`font-bold uppercase tracking-wider pb-0.5 border-b border-slate-200 break-after-avoid resume-section-heading ${s.headingMargin}`}
                         style={{ color: themeColor, fontSize: s.fontBase, lineHeight: '1.2' }}
                       >
                         Experience
                       </h3>
                       <div className={s.entryGap}>
                         {workExperience.map((exp) => (
-                          <div key={exp.id} className="resume-entry">
+                          <div key={exp.id} className="resume-entry break-inside-avoid">
                             <div className="flex items-baseline justify-between gap-2">
                               <div className="min-w-0">
                                 <span
@@ -379,14 +379,14 @@ export default function ModernTemplate({ data, s }: TemplateProps) {
                   return (
                     <div key="projects">
                       <h3
-                        className={`font-bold uppercase tracking-wider pb-0.5 border-b border-slate-200 ${s.headingMargin}`}
+                        className={`font-bold uppercase tracking-wider pb-0.5 border-b border-slate-200 break-after-avoid resume-section-heading ${s.headingMargin}`}
                         style={{ color: themeColor, fontSize: s.fontBase, lineHeight: '1.2' }}
                       >
                         Projects &amp; Extracurricular
                       </h3>
                       <div className={s.entryGap}>
                         {projects.map((proj) => (
-                          <div key={proj.id} className="resume-entry">
+                          <div key={proj.id} className="resume-entry break-inside-avoid">
                             <div className="flex items-baseline justify-between gap-2 flex-wrap">
                               <div className="flex items-baseline gap-1.5 flex-wrap min-w-0">
                                 <span
@@ -450,14 +450,14 @@ export default function ModernTemplate({ data, s }: TemplateProps) {
                   return (
                     <div key="education">
                       <h3
-                        className={`font-bold uppercase tracking-wider pb-0.5 border-b border-slate-200 ${s.headingMargin}`}
+                        className={`font-bold uppercase tracking-wider pb-0.5 border-b border-slate-200 break-after-avoid resume-section-heading ${s.headingMargin}`}
                         style={{ color: themeColor, fontSize: s.fontBase, lineHeight: '1.2' }}
                       >
                         Education
                       </h3>
                       <div className={s.entryGap}>
                         {education.map((edu) => (
-                          <div key={edu.id} className="resume-entry">
+                          <div key={edu.id} className="resume-entry break-inside-avoid">
                             <div className="flex items-baseline justify-between gap-2">
                               <div className="min-w-0">
                                 <span

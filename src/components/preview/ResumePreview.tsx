@@ -73,6 +73,7 @@ const spacingMap: Record<SpacingOption, SpacingStyles> = {
 export default function ResumePreview() {
   const { resumeData, setSpacing } = useResume();
   const [zoom, setZoom] = useState(0.85);
+  const [pageTarget, setPageTarget] = useState<1 | 2>(1);
   const contentRef = useRef<HTMLDivElement>(null);
   const [contentHeightPx, setContentHeightPx] = useState<number>(A4_HEIGHT_PX);
 
@@ -96,6 +97,8 @@ export default function ResumePreview() {
     return () => observer.disconnect();
   }, [resumeData, template, spacing, fontFamily]);
 
+  const targetLimitPx = pageTarget * A4_HEIGHT_PX;
+  const fitsTarget = contentHeightPx <= targetLimitPx + A4_FIT_TOLERANCE_PX;
   const fitsOnePage = contentHeightPx <= A4_HEIGHT_PX + A4_FIT_TOLERANCE_PX;
   const estimatedPages = Math.max(
     1,
@@ -128,21 +131,22 @@ export default function ResumePreview() {
             Live PDF Preview ({Math.round(zoom * 100)}%)
           </span>
 
-          {/* Live 1-Page A4 Fit Pill */}
+          {/* Live A4 Page Fit Pill */}
           <span
             data-testid="a4-fit-status"
             data-content-height={contentHeightPx}
-            title={`Content height: ${contentHeightPx}px vs. 1 A4 page (${A4_HEIGHT_PX}px / 297mm)`}
+            data-page-target={pageTarget}
+            title={`Content height: ${contentHeightPx}px vs. ${pageTarget}-page A4 target (${targetLimitPx}px)`}
             className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold border no-print print:hidden ${
-              fitsOnePage
+              fitsTarget
                 ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
                 : 'bg-amber-500/15 text-amber-300 border-amber-500/35'
             }`}
           >
-            {fitsOnePage ? (
+            {fitsTarget ? (
               <>
                 <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                <span>Fits 1 page</span>
+                <span>{pageTarget === 1 ? 'Fits 1 page' : 'Fits 2 pages'}</span>
               </>
             ) : (
               <>
@@ -152,7 +156,39 @@ export default function ResumePreview() {
             )}
           </span>
 
-          {!fitsOnePage && spacing !== 'compact' && (
+          {/* Compact 1-Page / 2-Page Target Toggle */}
+          <div
+            role="group"
+            aria-label="A4 page target"
+            className="inline-flex items-center p-0.5 rounded-lg bg-surface border border-border text-[10px] font-semibold no-print print:hidden"
+          >
+            <button
+              type="button"
+              aria-pressed={pageTarget === 1}
+              onClick={() => setPageTarget(1)}
+              className={`px-2 py-0.5 rounded-md transition-colors cursor-pointer ${
+                pageTarget === 1
+                  ? 'bg-primary text-white shadow-xs'
+                  : 'text-text-secondary hover:text-text-primary'
+              }`}
+            >
+              1 Page
+            </button>
+            <button
+              type="button"
+              aria-pressed={pageTarget === 2}
+              onClick={() => setPageTarget(2)}
+              className={`px-2 py-0.5 rounded-md transition-colors cursor-pointer ${
+                pageTarget === 2
+                  ? 'bg-primary text-white shadow-xs'
+                  : 'text-text-secondary hover:text-text-primary'
+              }`}
+            >
+              2 Pages
+            </button>
+          </div>
+
+          {!fitsTarget && spacing !== 'compact' && (
             <button
               type="button"
               onClick={() => setSpacing('compact')}
@@ -205,27 +241,56 @@ export default function ResumePreview() {
         >
           <div ref={contentRef}>{renderTemplate()}</div>
 
-          {/* Subtle A4 Page 1 Boundary Guide (Screen only — strictly hidden in @media print) */}
+          {/* Subtle A4 Page 1 Break / Boundary Guide (Screen only — strictly hidden in @media print) */}
           <div
             aria-hidden="true"
             className="page-break-guide no-print print:hidden pointer-events-none absolute left-0 right-0 flex items-center justify-end pr-2"
             style={{
               top: fitsOnePage ? 'calc(297mm - 1px)' : '297mm',
-              borderTop: fitsOnePage
-                ? '1px dashed rgba(148, 163, 184, 0.4)'
-                : '1.5px dashed rgba(245, 158, 11, 0.75)',
+              borderTop:
+                pageTarget === 2
+                  ? '1px dashed rgba(100, 116, 139, 0.55)'
+                  : fitsOnePage
+                  ? '1px dashed rgba(148, 163, 184, 0.4)'
+                  : '1.5px dashed rgba(245, 158, 11, 0.75)',
             }}
           >
             <span
               className={`-mt-4 px-1.5 py-0.5 rounded text-[9px] font-semibold tracking-wide uppercase ${
-                fitsOnePage
+                pageTarget === 2
+                  ? 'bg-slate-100/95 text-slate-600 border border-slate-300'
+                  : fitsOnePage
                   ? 'bg-slate-100/90 text-slate-400 border border-slate-200/80'
                   : 'bg-amber-50 text-amber-700 border border-amber-300'
               }`}
             >
-              Page 1 A4 Boundary (297mm)
+              {pageTarget === 2 ? 'Page 1 / Page 2 Break' : 'Page 1 A4 Boundary (297mm)'}
             </span>
           </div>
+
+          {/* Optional Page 2 A4 Boundary Guide when 2-Page target is active and content reaches Page 2 */}
+          {pageTarget === 2 && !fitsOnePage && (
+            <div
+              aria-hidden="true"
+              className="page-break-guide no-print print:hidden pointer-events-none absolute left-0 right-0 flex items-center justify-end pr-2"
+              style={{
+                top: fitsTarget ? 'calc(594mm - 1px)' : '594mm',
+                borderTop: fitsTarget
+                  ? '1px dashed rgba(148, 163, 184, 0.4)'
+                  : '1.5px dashed rgba(245, 158, 11, 0.75)',
+              }}
+            >
+              <span
+                className={`-mt-4 px-1.5 py-0.5 rounded text-[9px] font-semibold tracking-wide uppercase ${
+                  fitsTarget
+                    ? 'bg-slate-100/90 text-slate-500 border border-slate-200/80'
+                    : 'bg-amber-50 text-amber-700 border border-amber-300'
+                }`}
+              >
+                Page 2 A4 Boundary (594mm)
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </div>

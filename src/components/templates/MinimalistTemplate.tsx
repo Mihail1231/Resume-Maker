@@ -103,7 +103,7 @@ export default function MinimalistTemplate({ data, s }: TemplateProps) {
         return (
           <div key="summary" className={`grid ${gridCols} resume-section`}>
             <h3
-              className="font-bold text-slate-400 uppercase tracking-wider text-right"
+              className="font-bold text-slate-400 uppercase tracking-wider text-right break-after-avoid resume-section-heading"
               style={{ fontSize: s.fontXs, lineHeight: '1.3' }}
             >
               Profile
@@ -122,14 +122,14 @@ export default function MinimalistTemplate({ data, s }: TemplateProps) {
         return (
           <div key="experience" className={`grid ${gridCols} resume-section`}>
             <h3
-              className="font-bold text-slate-400 uppercase tracking-wider text-right"
+              className="font-bold text-slate-400 uppercase tracking-wider text-right break-after-avoid resume-section-heading"
               style={{ fontSize: s.fontXs, lineHeight: '1.3' }}
             >
               Experience
             </h3>
             <div className={s.entryGap}>
               {workExperience.map((exp) => (
-                <div key={exp.id} className="resume-entry">
+                <div key={exp.id} className="resume-entry break-inside-avoid">
                   <div className="flex justify-between items-baseline gap-2">
                     <div className="min-w-0">
                       <span
@@ -189,14 +189,14 @@ export default function MinimalistTemplate({ data, s }: TemplateProps) {
         return (
           <div key="projects" className={`grid ${gridCols} resume-section`}>
             <h3
-              className="font-bold text-slate-400 uppercase tracking-wider text-right"
+              className="font-bold text-slate-400 uppercase tracking-wider text-right break-after-avoid resume-section-heading"
               style={{ fontSize: s.fontXs, lineHeight: '1.3' }}
             >
               Projects
             </h3>
             <div className={s.entryGap}>
               {projects.map((proj) => (
-                <div key={proj.id} className="resume-entry">
+                <div key={proj.id} className="resume-entry break-inside-avoid">
                   <div className="flex justify-between items-baseline gap-2 flex-wrap">
                     <div className="flex items-baseline gap-1.5 flex-wrap min-w-0">
                       <span
@@ -260,14 +260,14 @@ export default function MinimalistTemplate({ data, s }: TemplateProps) {
         return (
           <div key="education" className={`grid ${gridCols} resume-section`}>
             <h3
-              className="font-bold text-slate-400 uppercase tracking-wider text-right"
+              className="font-bold text-slate-400 uppercase tracking-wider text-right break-after-avoid resume-section-heading"
               style={{ fontSize: s.fontXs, lineHeight: '1.3' }}
             >
               Education
             </h3>
             <div className={s.entryGap}>
               {education.map((edu) => (
-                <div key={edu.id} className="resume-entry">
+                <div key={edu.id} className="resume-entry break-inside-avoid">
                   <div className="flex justify-between items-baseline gap-2">
                     <div className="min-w-0">
                       <span
@@ -331,7 +331,7 @@ export default function MinimalistTemplate({ data, s }: TemplateProps) {
         return (
           <div key="details" className={`grid ${gridCols} resume-section`}>
             <h3
-              className="font-bold text-slate-400 uppercase tracking-wider text-right"
+              className="font-bold text-slate-400 uppercase tracking-wider text-right break-after-avoid resume-section-heading"
               style={{ fontSize: s.fontXs, lineHeight: '1.3' }}
             >
               Details

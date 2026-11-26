@@ -103,7 +103,7 @@ export default function ExecutiveTemplate({ data, s }: TemplateProps) {
         return (
           <div key="summary" className="resume-section">
             <h3
-              className={`font-bold uppercase tracking-wider border-b pb-0.5 ${s.headingMargin}`}
+              className={`font-bold uppercase tracking-wider border-b pb-0.5 break-after-avoid resume-section-heading ${s.headingMargin}`}
               style={{
                 color: themeColor,
                 borderBottomColor: themeColor,
@@ -127,7 +127,7 @@ export default function ExecutiveTemplate({ data, s }: TemplateProps) {
         return (
           <div key="experience" className="resume-section">
             <h3
-              className={`font-bold uppercase tracking-wider border-b pb-0.5 ${s.headingMargin}`}
+              className={`font-bold uppercase tracking-wider border-b pb-0.5 break-after-avoid resume-section-heading ${s.headingMargin}`}
               style={{
                 color: themeColor,
                 borderBottomColor: themeColor,
@@ -139,7 +139,7 @@ export default function ExecutiveTemplate({ data, s }: TemplateProps) {
             </h3>
             <div className={s.entryGap}>
               {workExperience.map((exp) => (
-                <div key={exp.id} className="resume-entry">
+                <div key={exp.id} className="resume-entry break-inside-avoid">
                   <div className="flex items-baseline justify-between gap-2">
                     <div className="min-w-0">
                       <span
@@ -199,7 +199,7 @@ export default function ExecutiveTemplate({ data, s }: TemplateProps) {
         return (
           <div key="projects" className="resume-section">
             <h3
-              className={`font-bold uppercase tracking-wider border-b pb-0.5 ${s.headingMargin}`}
+              className={`font-bold uppercase tracking-wider border-b pb-0.5 break-after-avoid resume-section-heading ${s.headingMargin}`}
               style={{
                 color: themeColor,
                 borderBottomColor: themeColor,
@@ -211,7 +211,7 @@ export default function ExecutiveTemplate({ data, s }: TemplateProps) {
             </h3>
             <div className={s.entryGap}>
               {projects.map((proj) => (
-                <div key={proj.id} className="resume-entry">
+                <div key={proj.id} className="resume-entry break-inside-avoid">
                   <div className="flex items-baseline justify-between gap-2 flex-wrap">
                     <div className="flex items-baseline gap-1.5 flex-wrap min-w-0">
                       <span
@@ -280,7 +280,7 @@ export default function ExecutiveTemplate({ data, s }: TemplateProps) {
         return (
           <div key="education" className="resume-section">
             <h3
-              className={`font-bold uppercase tracking-wider border-b pb-0.5 ${s.headingMargin}`}
+              className={`font-bold uppercase tracking-wider border-b pb-0.5 break-after-avoid resume-section-heading ${s.headingMargin}`}
               style={{
                 color: themeColor,
                 borderBottomColor: themeColor,
@@ -292,7 +292,7 @@ export default function ExecutiveTemplate({ data, s }: TemplateProps) {
             </h3>
             <div className={s.entryGap}>
               {education.map((edu) => (
-                <div key={edu.id} className="resume-entry">
+                <div key={edu.id} className="resume-entry break-inside-avoid">
                   <div className="flex items-baseline justify-between gap-2">
                     <div className="min-w-0">
                       <span
@@ -365,7 +365,7 @@ export default function ExecutiveTemplate({ data, s }: TemplateProps) {
         return (
           <div key="grouped-skills" className="resume-section">
             <h3
-              className={`font-bold uppercase tracking-wider border-b pb-0.5 ${s.headingMargin}`}
+              className={`font-bold uppercase tracking-wider border-b pb-0.5 break-after-avoid resume-section-heading ${s.headingMargin}`}
               style={{
                 color: themeColor,
                 borderBottomColor: themeColor,

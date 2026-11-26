@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import StaticLink from '@/components/ui/StaticLink';
 import {
   FileText,
   Sparkles,
@@ -95,16 +95,16 @@ export default function HomePage() {
             </span>
           </div>
           <div className="flex items-center gap-3">
-            <Link href="/builder" className="btn btn-ghost text-sm hidden sm:inline-flex">
+            <StaticLink href="/builder" className="btn btn-ghost text-sm hidden sm:inline-flex">
               Start From Scratch
-            </Link>
-            <Link
+            </StaticLink>
+            <StaticLink
               href="/builder?sample=true&mode=tailor"
               className="btn btn-primary text-sm"
             >
               Try Interactive Demo
               <ArrowRight className="w-4 h-4" />
-            </Link>
+            </StaticLink>
           </div>
         </div>
       </nav>
@@ -145,25 +145,25 @@ export default function HomePage() {
             className="flex flex-wrap items-center justify-center gap-3.5 animate-fade-in-up"
             style={{ animationDelay: '0.3s' }}
           >
-            <Link
+            <StaticLink
               href="/builder?sample=true&mode=tailor"
               className="btn btn-primary text-base px-7 py-3 animate-pulse-glow"
             >
               <Target className="w-5 h-5" />
               Try Interactive Demo
               <ArrowRight className="w-5 h-5" />
-            </Link>
-            <Link
+            </StaticLink>
+            <StaticLink
               href="/builder?import=true"
               className="btn text-base px-7 py-3 bg-accent/15 text-accent border border-accent/35 hover:bg-accent/25"
             >
               <Upload className="w-5 h-5" />
               Upload CV (PDF / DOCX)
-            </Link>
-            <Link href="/builder" className="btn btn-ghost text-base px-7 py-3">
+            </StaticLink>
+            <StaticLink href="/builder" className="btn btn-ghost text-base px-7 py-3">
               <FileText className="w-5 h-5" />
               Start From Scratch
-            </Link>
+            </StaticLink>
           </div>
         </div>
       </section>
@@ -241,25 +241,25 @@ export default function HomePage() {
               or start crafting your own resume from scratch.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3">
-              <Link
+              <StaticLink
                 href="/builder?sample=true&mode=tailor"
                 className="btn btn-primary text-base px-7 py-3.5"
               >
                 <Zap className="w-5 h-5" />
                 Try Interactive Demo
                 <ArrowRight className="w-5 h-5" />
-              </Link>
-              <Link
+              </StaticLink>
+              <StaticLink
                 href="/builder?import=true"
                 className="btn text-base px-7 py-3.5 bg-accent/15 text-accent border border-accent/35 hover:bg-accent/25"
               >
                 <Upload className="w-5 h-5" />
                 Upload Existing CV
-              </Link>
-              <Link href="/builder" className="btn btn-ghost text-base px-7 py-3.5">
+              </StaticLink>
+              <StaticLink href="/builder" className="btn btn-ghost text-base px-7 py-3.5">
                 <Download className="w-5 h-5" />
                 Start From Scratch
-              </Link>
+              </StaticLink>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-6 mt-8 text-sm text-text-muted">
               <span className="flex items-center gap-1.5">
@@ -277,7 +277,7 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-6 border-t border-border">
+      <footer className="py-8 px-6 border-t border-border no-print print:hidden">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-text-muted">
           <div className="flex items-center gap-2">
             <Target className="w-4 h-4 text-primary-light" />

@@ -327,12 +327,14 @@ body {
     display: none !important;
   }
 
-  /* Style the resume sheet itself to print at standard size at 100% zoom scale */
+  /* Style the resume sheet itself to print cleanly at 100% scale across 1 or 2+ A4 pages */
   .resume-sheet {
     display: block !important;
     position: relative !important;
     width: 210mm !important;
     min-height: 297mm !important;
+    height: auto !important;
+    overflow: visible !important;
     margin: 0 auto !important;
     padding: 0 !important;
     box-shadow: none !important;
@@ -342,19 +344,16 @@ body {
     transform: scale(1) !important; /* CRITICAL: Force 100% scale in print */
     transform-origin: top left !important;
     margin-bottom: 0 !important; /* CRITICAL: Override zoom spacing hack */
-    page-break-after: avoid !important;
-    page-break-before: avoid !important;
-    break-after: avoid !important;
-    break-before: avoid !important;
   }
 
   /* Prevent orphaned section headers at the bottom of pages */
-  .resume-sheet h3 {
+  .resume-sheet h3,
+  .resume-section-heading {
     break-after: avoid !important;
     page-break-after: avoid !important;
   }
 
-  /* Prevent awkward page breaks inside individual list/history entries */
+  /* Prevent awkward page breaks inside individual Experience, Education, and Project entries */
   .resume-entry {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
