@@ -19,7 +19,7 @@ const features = [
     icon: Target,
     title: 'Live RoleFit Score (0–100%)',
     description:
-      'Paste any internship JD and watch your match percentage, matched skills, and priority gaps update live as you edit.',
+      'Paste any job description and watch your match percentage, matched skills, and priority gaps update live as you edit.',
     gradient: 'from-blue-500 to-cyan-400',
   },
   {
@@ -68,9 +68,9 @@ const steps = [
   },
   {
     step: '02',
-    title: 'Paste Internship JD & Get Live RoleFit Score',
+    title: 'Paste a Job Description & Get Live RoleFit Score',
     description:
-      'Try one of 3 built-in internship presets (PM, SWE, Data/BA) or paste any job posting to reveal matched and missing keywords instantly.',
+      'Try one of 7 built-in Business & Tech role presets or paste any job description to reveal matched and missing keywords instantly.',
   },
   {
     step: '03',
@@ -128,7 +128,7 @@ export default function HomePage() {
             Tailor Your Resume
             <br />
             <span className="bg-gradient-to-r from-primary-light via-accent to-primary bg-clip-text text-transparent">
-              To Any Internship JD
+              to Any Job Description
             </span>
           </h1>
 
@@ -176,8 +176,8 @@ export default function HomePage() {
               Built to Pass Student &amp; Internship ATS Screens
             </h2>
             <p className="text-text-secondary text-lg max-w-2xl mx-auto">
-              Real-time JD keyword matching paired with a clean split-screen resume studio — no
-              paywalls, no data harvesting, and no broken PDF formatting.
+              Real-time job description keyword matching paired with a clean split-screen resume
+              studio — no paywalls, no data harvesting, and no broken PDF formatting.
             </p>
           </div>
 
@@ -237,8 +237,8 @@ export default function HomePage() {
               Ready to Boost Your Internship Match Score?
             </h2>
             <p className="text-text-secondary text-lg mb-8 max-w-lg mx-auto">
-              Launch the interactive demo with Maya Lin&apos;s student resume and 3 internship JDs,
-              or start crafting your own resume from scratch.
+              Launch the interactive demo with sample student resumes and 7 preset job
+              descriptions, or start crafting your own resume from scratch.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3">
               <StaticLink

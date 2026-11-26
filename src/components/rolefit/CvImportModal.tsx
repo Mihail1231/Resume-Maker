@@ -159,7 +159,7 @@ export default function CvImportModal({ isOpen, onClose, onApplied }: CvImportMo
                 Upload Existing CV (PDF / DOCX)
               </h2>
               <p className="text-xs text-text-muted">
-                Auto-fill your resume sections locally, then tailor to any internship JD
+                Auto-fill your resume sections locally, then tailor to any job description
               </p>
             </div>
           </div>

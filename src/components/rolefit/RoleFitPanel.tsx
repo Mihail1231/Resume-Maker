@@ -523,7 +523,7 @@ export default function RoleFitPanel({
             Paste a Job Description to Calculate Your RoleFit Score
           </h3>
           <p className="text-xs text-text-secondary max-w-sm mx-auto leading-relaxed">
-            Pick one of the 3 internship presets above or paste any role description. RoleFit
+            Pick one of the preset job descriptions above or paste any role description. RoleFit
             instantly normalizes synonyms and lets you insert tailored impact bullets in 1 click.
           </p>
         </div>
@@ -622,14 +622,14 @@ export default function RoleFitPanel({
 
             {analysis.missingKeywords.length === 0 ? (
               <p className="text-xs text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-3 py-2">
-                Every detected JD keyword is covered in your resume!
+                Every detected job description keyword is covered in your resume!
               </p>
             ) : (
               <div className="flex flex-wrap gap-1.5">
                 {analysis.missingKeywords.map((item) => {
                   const categoryName =
                     item.category === 'domain'
-                      ? 'JD Domain Term'
+                      ? 'Role Domain Term'
                       : CATEGORY_LABELS[item.category as SkillCategory];
                   const isSelected = activeDrawer?.keyword === item.keyword;
                   return (
@@ -637,7 +637,7 @@ export default function RoleFitPanel({
                       key={item.keyword}
                       type="button"
                       onClick={() => handleMissingPillClick(item.keyword, item.category)}
-                      title={`Click to add "${item.keyword}" • ${categoryName} • Mentioned ${item.jdMentions}x in JD`}
+                      title={`Click to add "${item.keyword}" • ${categoryName} • Mentioned ${item.jdMentions}x in Job Description`}
                       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
                         isSelected
                           ? 'bg-amber-500/25 text-amber-100 border-amber-400 ring-2 ring-amber-400/30'
@@ -668,7 +668,7 @@ export default function RoleFitPanel({
                       </span>
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-surface-light text-text-secondary border border-border">
                         {activeDrawer.category === 'domain'
-                          ? 'JD Term'
+                          ? 'Role Term'
                           : CATEGORY_LABELS[activeDrawer.category as SkillCategory]}
                       </span>
                     </div>
@@ -844,8 +844,8 @@ export default function RoleFitPanel({
 
             {analysis.matchedKeywords.length === 0 ? (
               <p className="text-xs text-text-muted italic">
-                No JD skills matched yet — load the student sample or click a missing keyword above
-                to see your score update live.
+                No job description skills matched yet — load a sample resume or click a missing
+                keyword above to see your score update live.
               </p>
             ) : (
               <div className="flex flex-wrap gap-1.5">
@@ -855,7 +855,7 @@ export default function RoleFitPanel({
                   return (
                     <span
                       key={item.keyword}
-                      title={`Matched in: ${item.locations.join(', ')} • Mentioned ${item.jdMentions}x in JD`}
+                      title={`Matched in: ${item.locations.join(', ')} • Mentioned ${item.jdMentions}x in Job Description`}
                       className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-300 border border-emerald-500/30"
                     >
                       <Check className="w-3 h-3 shrink-0 text-emerald-400" />

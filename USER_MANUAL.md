@@ -11,7 +11,7 @@ RoleFit Resume Tailor helps students and early-career applicants tailor their CV
 1. **Launch Demo Mode:** Open the landing page (`/`) and click **Try Interactive Demo**.
 2. **Explore Profiles & Target Role Presets:**
    - Toggle between the two fictional student profiles in the **Quick Demo Mode** bar: **HSG Sample** (*Lukas Weber*) and **Tech Sample** (*Maya Lin*).
-   - Switch between the two target-role tracks and click any preset JD to watch the live **RoleFit Score** update:
+   - Switch between the two target-role tracks and click any preset job description to watch the live **RoleFit Score** update:
      - **Business & Finance (HSG):** *Strategy Consulting*, *M&A / IB Analyst*, *VC / PE Intern*, *Founder's Associate*
      - **Tech & Product:** *PM Intern*, *SWE Intern*, *Data / BA Intern*
 3. **Close Keyword Gaps in 1 Click:**
@@ -34,7 +34,7 @@ RoleFit Resume Tailor helps students and early-career applicants tailor their CV
    - Drag and drop a `.pdf` or `.docx` resume—the parser handles both **US** single-column resumes and **European / DACH / HSG** two-column date-rail CVs (`MM.YYYY` dates, international phone formats, and Swiss GPA scales).
    - Prefer plain text or using a scanned/image-only PDF? Switch to the **Paste CV Text** tab instead.
 3. **Review Import Preview:** Inspect the detected counts (Experience, Education, Projects, Skills, Languages) in the **Import Preview** step and click **Apply to Resume** (you can fine-tune any field afterward under **Edit Resume**).
-4. **Tailor to Any Real JD:** Switch to **RoleFit Tailor**, paste any job posting into the **Target Job Description** box, and use the live **RoleFit Score**, Missing Keywords drawer, and **ATS Quick Check** to tailor your CV before exporting.
+4. **Tailor to Any Real Job Description:** Switch to **RoleFit Tailor**, paste any job posting into the **Target Job Description** box, and use the live **RoleFit Score**, Missing Keywords drawer, and **ATS Quick Check** to tailor your CV before exporting.
 5. **Save Versions Locally:** Use **Backup JSON** / **Import JSON** in the top toolbar to save or switch between role-specific versions of your CV.
 
 ---
@@ -59,7 +59,7 @@ Open **`http://localhost:3000`** in your browser.
 
 - **100% Client-Side:** All CV parsing (`pdfjs-dist` and `mammoth`), keyword matching, and ATS checks run strictly inside your browser.
 - **Zero Uploads or Accounts:** No sign-up, no API keys, and no files or personal details are ever sent to an external server.
-- **Local Persistence:** Your draft resume and pasted JD auto-save in browser `localStorage` and can be wiped at any time via **Clear All**.
+- **Local Persistence:** Your draft resume and pasted job description auto-save in browser `localStorage` and can be wiped at any time via **Clear All**.
 
 ---
 

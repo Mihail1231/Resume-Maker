@@ -8,9 +8,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'RoleFit Resume Tailor — Tailor Your Student Resume to Any Internship JD',
+  title: 'RoleFit Resume Tailor — Tailor Your Resume to Any Job Description',
   description:
-    'Free, 100% client-side student resume tailor and ATS builder. Paste any internship job description, see your live RoleFit Match Score, insert XYZ impact bullets in 1 click, and export a crisp selectable-text A4 PDF.',
+    'Free, 100% client-side student resume tailor and ATS builder. Paste any job description, see your live RoleFit Match Score, insert XYZ impact bullets in 1 click, and export a crisp selectable-text A4 PDF.',
   keywords: [
     'RoleFit Resume Tailor',
     'student resume tailor',
