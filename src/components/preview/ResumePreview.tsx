@@ -82,7 +82,7 @@ export default function ResumePreview() {
   return (
     <div className="flex flex-col h-full">
       {/* Zoom Controls Bar */}
-      <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-surface-light no-print">
+      <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-surface-light no-print print:hidden">
         <span className="text-xs font-semibold text-text-secondary uppercase tracking-wider">
           Live PDF Preview ({Math.round(zoom * 100)}%)
         </span>

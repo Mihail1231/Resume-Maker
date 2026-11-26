@@ -1,12 +1,13 @@
 'use client';
 
-import { ResumeData } from '@/types/resume';
+import React from 'react';
+import { ResumeData, SpacingStyles } from '@/types/resume';
 import { Mail, Phone, MapPin, Globe } from 'lucide-react';
 import { Linkedin, Github } from '@/components/icons/BrandIcons';
 
 interface TemplateProps {
   data: ResumeData;
-  s: any; // Spacing settings
+  s: SpacingStyles;
 }
 
 export default function ExecutiveTemplate({ data, s }: TemplateProps) {
@@ -38,7 +39,7 @@ export default function ExecutiveTemplate({ data, s }: TemplateProps) {
     personalInfo.website && { label: personalInfo.website, icon: Globe, href: getFullUrl(personalInfo.website) },
     personalInfo.linkedin && { label: personalInfo.linkedin, icon: Linkedin, href: getFullUrl(personalInfo.linkedin) },
     personalInfo.github && { label: personalInfo.github, icon: Github, href: getFullUrl(personalInfo.github) },
-  ].filter(Boolean) as { label: string; icon: any; href?: string }[];
+  ].filter(Boolean) as { label: string; icon: React.ComponentType<{ className?: string }>; href?: string }[];
 
   const renderedGroupedSkills = { current: false };
 

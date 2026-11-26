@@ -8,10 +8,17 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Resume Maker — Build Professional Resumes in Minutes',
+  title: 'RoleFit Resume Tailor — Tailor Your Student Resume to Any Internship JD',
   description:
-    'Create stunning, ATS-friendly professional resumes with our modern builder. Choose from premium templates, customize every detail, and export to PDF instantly.',
-  keywords: ['resume builder', 'CV maker', 'professional resume', 'ATS-friendly', 'PDF export'],
+    'Free, 100% client-side student resume tailor and ATS builder. Paste any internship job description, see your live RoleFit Match Score, insert XYZ impact bullets in 1 click, and export a crisp selectable-text A4 PDF.',
+  keywords: [
+    'RoleFit Resume Tailor',
+    'student resume tailor',
+    'internship resume builder',
+    'ATS keyword matcher',
+    'XYZ impact bullets',
+    'ATS-friendly PDF export',
+  ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

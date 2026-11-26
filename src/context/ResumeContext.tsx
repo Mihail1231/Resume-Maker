@@ -42,6 +42,12 @@ interface ResumeContextType {
     entryId: string,
     bulletText: string
   ) => void;
+  replaceBulletText: (
+    targetType: 'experience' | 'project',
+    entryId: string,
+    bulletIndex: number,
+    newText: string
+  ) => void;
   updateLanguages: (languages: string[]) => void;
   updateCertifications: (certifications: string[]) => void;
 
@@ -70,32 +76,40 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
 
   // Load from query param (?sample=true) or localStorage on mount (static-export safe)
   useEffect(() => {
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const sampleParam = params.get('sample');
-      if (sampleParam === 'true' || sampleParam === 'student') {
-        setResumeData(STUDENT_SAMPLE_RESUME_DATA);
-        initialLoadDone.current = true;
-        return;
-      }
-      if (sampleParam === 'senior') {
-        setResumeData(SAMPLE_RESUME_DATA);
-        initialLoadDone.current = true;
-        return;
-      }
-
-      const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (!parsed.sectionOrder) {
-          parsed.sectionOrder = DEFAULT_RESUME_DATA.sectionOrder;
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (cancelled) return;
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const sampleParam = params.get('sample');
+        if (sampleParam === 'true' || sampleParam === 'student') {
+          setResumeData(STUDENT_SAMPLE_RESUME_DATA);
+          initialLoadDone.current = true;
+          return;
         }
-        setResumeData(parsed);
+        if (sampleParam === 'senior') {
+          setResumeData(SAMPLE_RESUME_DATA);
+          initialLoadDone.current = true;
+          return;
+        }
+
+        const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (!parsed.sectionOrder) {
+            parsed.sectionOrder = DEFAULT_RESUME_DATA.sectionOrder;
+          }
+          setResumeData(parsed);
+        }
+      } catch {
+        // ignore parse errors
       }
-    } catch {
-      // ignore parse errors
-    }
-    initialLoadDone.current = true;
+      initialLoadDone.current = true;
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // Auto-save to localStorage on every change
@@ -334,6 +348,43 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
+  const replaceBulletText = useCallback(
+    (
+      targetType: 'experience' | 'project',
+      entryId: string,
+      bulletIndex: number,
+      newText: string
+    ) => {
+      const trimmed = newText.trim();
+      if (!trimmed) return;
+
+      if (targetType === 'experience') {
+        setResumeData((prev) => ({
+          ...prev,
+          workExperience: prev.workExperience.map((exp) => {
+            if (exp.id !== entryId) return exp;
+            if (bulletIndex < 0 || bulletIndex >= exp.description.length) return exp;
+            const nextDesc = [...exp.description];
+            nextDesc[bulletIndex] = trimmed;
+            return { ...exp, description: nextDesc };
+          }),
+        }));
+      } else {
+        setResumeData((prev) => ({
+          ...prev,
+          projects: prev.projects.map((proj) => {
+            if (proj.id !== entryId) return proj;
+            if (bulletIndex < 0 || bulletIndex >= proj.description.length) return proj;
+            const nextDesc = [...proj.description];
+            nextDesc[bulletIndex] = trimmed;
+            return { ...proj, description: nextDesc };
+          }),
+        }));
+      }
+    },
+    []
+  );
+
   const updateLanguages = useCallback((languages: string[]) => {
     setResumeData((prev) => ({ ...prev, languages }));
   }, []);
@@ -438,6 +489,7 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
         updateSkills,
         addSkillTag,
         appendBulletToEntry,
+        replaceBulletText,
         updateLanguages,
         updateCertifications,
         setTemplate,

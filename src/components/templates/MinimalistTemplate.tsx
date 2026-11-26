@@ -1,16 +1,16 @@
 'use client';
 
-import { ResumeData } from '@/types/resume';
+import { ResumeData, SpacingStyles } from '@/types/resume';
 import { Mail, Phone, MapPin, Globe } from 'lucide-react';
 import { Linkedin, Github } from '@/components/icons/BrandIcons';
 
 interface TemplateProps {
   data: ResumeData;
-  s: any; // Spacing settings
+  s: SpacingStyles;
 }
 
 export default function MinimalistTemplate({ data, s }: TemplateProps) {
-  const { personalInfo, summary, workExperience, education, projects, skills, languages, certifications, themeColor } = data;
+  const { personalInfo, summary, workExperience, education, projects, skills, languages, certifications } = data;
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return '';

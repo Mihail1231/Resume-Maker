@@ -10,6 +10,7 @@ import ProjectsForm from '@/components/editor/ProjectsForm';
 import SkillsForm from '@/components/editor/SkillsForm';
 import ResumePreview from '@/components/preview/ResumePreview';
 import RoleFitPanel from '@/components/rolefit/RoleFitPanel';
+import { SectionId, SpacingOption } from '@/types/resume';
 import {
   analyzeRoleFit,
   ROLEFIT_JD_STORAGE_KEY,
@@ -119,24 +120,32 @@ function BuilderWorkspace() {
   const jdHydratedRef = useRef(false);
 
   useEffect(() => {
-    try {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('mode') === 'tailor') {
-        setWorkspaceMode('tailor');
-      }
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (cancelled) return;
+      try {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('mode') === 'tailor') {
+          setWorkspaceMode('tailor');
+        }
 
-      const savedJd = localStorage.getItem(ROLEFIT_JD_STORAGE_KEY);
-      if (savedJd !== null) {
-        setJdText(savedJd);
+        const savedJd = localStorage.getItem(ROLEFIT_JD_STORAGE_KEY);
+        if (savedJd !== null) {
+          setJdText(savedJd);
+        }
+        const savedPreset = localStorage.getItem(ROLEFIT_PRESET_STORAGE_KEY);
+        if (savedPreset) {
+          setActivePresetId(savedPreset);
+        }
+      } catch {
+        // ignore storage errors
       }
-      const savedPreset = localStorage.getItem(ROLEFIT_PRESET_STORAGE_KEY);
-      if (savedPreset) {
-        setActivePresetId(savedPreset);
-      }
-    } catch {
-      // ignore storage errors
-    }
-    jdHydratedRef.current = true;
+      jdHydratedRef.current = true;
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -171,6 +180,14 @@ function BuilderWorkspace() {
   const handleClearJd = () => {
     setJdText('');
     setActivePresetId(null);
+  };
+
+  const handleJumpToEditor = (section: 'experience' | 'projects' | 'skills') => {
+    setWorkspaceMode('edit');
+    setOpenSections((prev) => ({
+      ...prev,
+      [section]: true,
+    }));
   };
 
   const scorePillClass =
@@ -220,10 +237,10 @@ function BuilderWorkspace() {
           </Link>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <FileText className="w-4.5 h-4.5 text-white" />
+              <Target className="w-4.5 h-4.5 text-white" />
             </div>
             <span className="font-bold tracking-tight hidden sm:inline">
-              Resume<span className="text-primary-light">Workspace</span>
+              RoleFit <span className="text-primary-light">Tailor</span>
             </span>
           </div>
         </div>
@@ -344,6 +361,7 @@ function BuilderWorkspace() {
               onSelectPreset={handleSelectPreset}
               onClearJd={handleClearJd}
               analysis={roleFitAnalysis}
+              onJumpToEditor={handleJumpToEditor}
             />
           ) : (
             <>
@@ -432,7 +450,7 @@ function BuilderWorkspace() {
                     <label className="input-label">Line & Item Spacing</label>
                     <select
                       value={resumeData.spacing}
-                      onChange={(e) => setSpacing(e.target.value as any)}
+                      onChange={(e) => setSpacing(e.target.value as SpacingOption)}
                       className="input-field"
                     >
                       <option value="compact">Compact</option>
@@ -478,7 +496,7 @@ function BuilderWorkspace() {
                           <div className="flex items-center gap-0.5 opacity-60 group-hover:opacity-100 transition-opacity">
                             <button
                               type="button"
-                              onClick={() => moveSection(id as any, 'up')}
+                              onClick={() => moveSection(id as SectionId, 'up')}
                               disabled={index === 0}
                               className="p-1 rounded hover:bg-surface-light disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
                               title="Move up"
@@ -487,7 +505,7 @@ function BuilderWorkspace() {
                             </button>
                             <button
                               type="button"
-                              onClick={() => moveSection(id as any, 'down')}
+                              onClick={() => moveSection(id as SectionId, 'down')}
                               disabled={index === arr.length - 1}
                               className="p-1 rounded hover:bg-surface-light disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
                               title="Move down"
@@ -605,6 +623,11 @@ function BuilderWorkspace() {
           </div>
             </>
           )}
+
+          {/* Subtle MIT Attribution Footer */}
+          <footer className="pt-4 pb-2 text-center text-[11px] text-text-muted border-t border-border/50 print:hidden no-print">
+            Built on Resume-Maker (MIT) &bull; Tailored with RoleFit
+          </footer>
         </div>
 
         {/* Right Panel: Live PDF Preview */}

@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useResume } from '@/context/ResumeContext';
 import { PRESET_INTERNSHIP_JDS, PresetJD } from '@/lib/rolefit/demoData';
 import { RoleFitAnalysis } from '@/lib/rolefit/analyzer';
 import { CATEGORY_LABELS, SkillCategory } from '@/lib/rolefit/dictionary';
+import { getBulletTemplatesForKeyword } from '@/lib/rolefit/bulletTemplates';
+import { runAtsQuickCheck, WeakBulletFlag } from '@/lib/rolefit/atsCheck';
 import {
   Sparkles,
   GraduationCap,
@@ -17,6 +19,12 @@ import {
   FileSearch,
   Target,
   Check,
+  Plus,
+  Info,
+  ShieldCheck,
+  Zap,
+  ArrowUpRight,
+  FileText,
 } from 'lucide-react';
 
 interface RoleFitPanelProps {
@@ -26,6 +34,19 @@ interface RoleFitPanelProps {
   onSelectPreset: (preset: PresetJD) => void;
   onClearJd: () => void;
   analysis: RoleFitAnalysis;
+  onJumpToEditor?: (section: 'experience' | 'projects' | 'skills') => void;
+}
+
+interface ActiveDrawerKeyword {
+  keyword: string;
+  category: SkillCategory | 'domain';
+}
+
+interface TargetEntryOption {
+  key: string;
+  type: 'experience' | 'project';
+  id: string;
+  label: string;
 }
 
 function getScoreTheme(score: number) {
@@ -67,6 +88,26 @@ function getTrackIcon(track: PresetJD['roleTrack']) {
   }
 }
 
+/**
+ * Highlight [bracketed placeholders] inside bullet template previews so students
+ * immediately see what to replace with authentic metrics and projects.
+ */
+function renderHighlightedBullet(text: string) {
+  const parts = text.split(/(\[[^\]]+\])/g);
+  return parts.map((part, idx) =>
+    part.startsWith('[') && part.endsWith(']') ? (
+      <span
+        key={idx}
+        className="px-1 py-0.5 rounded bg-amber-500/15 text-amber-200 font-medium"
+      >
+        {part}
+      </span>
+    ) : (
+      <React.Fragment key={idx}>{part}</React.Fragment>
+    )
+  );
+}
+
 export default function RoleFitPanel({
   jdText,
   onJdChange,
@@ -74,9 +115,21 @@ export default function RoleFitPanel({
   onSelectPreset,
   onClearJd,
   analysis,
+  onJumpToEditor,
 }: RoleFitPanelProps) {
-  const { resumeData, loadStudentSampleData } = useResume();
+  const {
+    resumeData,
+    loadStudentSampleData,
+    addSkillTag,
+    appendBulletToEntry,
+    replaceBulletText,
+  } = useResume();
+
   const [studentLoadedFeedback, setStudentLoadedFeedback] = useState(false);
+  const [activeDrawer, setActiveDrawer] = useState<ActiveDrawerKeyword | null>(null);
+  const [selectedTargetKey, setSelectedTargetKey] = useState<string>('');
+  const [insertedTemplateIds, setInsertedTemplateIds] = useState<Record<string, boolean>>({});
+  const [actionToast, setActionToast] = useState<string | null>(null);
 
   const isResumeEmpty =
     !resumeData.personalInfo.fullName &&
@@ -85,11 +138,82 @@ export default function RoleFitPanel({
     resumeData.projects.length === 0 &&
     resumeData.skills.length === 0;
 
+  const targetEntries = useMemo<TargetEntryOption[]>(() => {
+    const expOptions: TargetEntryOption[] = resumeData.workExperience.map((exp, idx) => ({
+      key: `experience:${exp.id}`,
+      type: 'experience',
+      id: exp.id,
+      label: `Experience · ${exp.position || `Role ${idx + 1}`}${
+        exp.company ? ` @ ${exp.company}` : ''
+      }`,
+    }));
+    const projOptions: TargetEntryOption[] = resumeData.projects.map((proj, idx) => ({
+      key: `project:${proj.id}`,
+      type: 'project',
+      id: proj.id,
+      label: `Project · ${proj.name || `Project ${idx + 1}`}`,
+    }));
+    return [...expOptions, ...projOptions];
+  }, [resumeData.workExperience, resumeData.projects]);
+
+  const effectiveTarget = useMemo(() => {
+    if (targetEntries.length === 0) return null;
+    return targetEntries.find((t) => t.key === selectedTargetKey) || targetEntries[0];
+  }, [targetEntries, selectedTargetKey]);
+
+  const atsCheck = useMemo(() => runAtsQuickCheck(resumeData), [resumeData]);
+
+  const drawerTemplates = useMemo(() => {
+    if (!activeDrawer) return [];
+    return getBulletTemplatesForKeyword(activeDrawer.keyword, activeDrawer.category);
+  }, [activeDrawer]);
+
+  const showToast = (message: string) => {
+    setActionToast(message);
+    window.setTimeout(() => {
+      setActionToast((prev) => (prev === message ? null : prev));
+    }, 2800);
+  };
+
   const handleLoadStudentSample = () => {
     loadStudentSampleData();
+    setActiveDrawer(null);
+    setInsertedTemplateIds({});
     setStudentLoadedFeedback(true);
     window.setTimeout(() => setStudentLoadedFeedback(false), 2500);
   };
+
+  const handleMissingPillClick = (keyword: string, category: SkillCategory | 'domain') => {
+    if (activeDrawer?.keyword === keyword) {
+      setActiveDrawer(null);
+      return;
+    }
+    setActiveDrawer({ keyword, category });
+    setInsertedTemplateIds({});
+  };
+
+  const handleAddSkillFromDrawer = (keyword: string) => {
+    addSkillTag(keyword);
+    showToast(`Added "${keyword}" to Skills — RoleFit score updated!`);
+  };
+
+  const handleInsertBullet = (templateId: string, bulletText: string) => {
+    if (!effectiveTarget) return;
+    appendBulletToEntry(effectiveTarget.type, effectiveTarget.id, bulletText);
+    setInsertedTemplateIds((prev) => ({ ...prev, [templateId]: true }));
+    showToast(`Inserted bullet into ${effectiveTarget.label.replace(/^(Experience|Project) · /, '')}`);
+  };
+
+  const handleSwapWeakVerb = (flag: WeakBulletFlag, verb: string, rewrittenBullet: string) => {
+    replaceBulletText(flag.targetType, flag.entryId, flag.bulletIndex, rewrittenBullet);
+    showToast(`Upgraded starter verb to "${verb}"`);
+  };
+
+  const isDrawerKeywordInSkills = activeDrawer
+    ? resumeData.skills.some(
+        (s) => s.trim().toLowerCase() === activeDrawer.keyword.toLowerCase()
+      )
+    : false;
 
   const wordCount = jdText.trim() ? jdText.trim().split(/\s+/).length : 0;
   const scoreTheme = getScoreTheme(analysis.score);
@@ -105,8 +229,43 @@ export default function RoleFitPanel({
       ? Math.max(0, Math.ceil(analysis.totalKeywords * 0.75) - analysis.matchedCount)
       : 0;
 
+  const densityBadgeClass =
+    atsCheck.densityStatus === 'optimal'
+      ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+      : atsCheck.densityStatus === 'light'
+      ? 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30'
+      : 'bg-amber-500/15 text-amber-300 border-amber-500/30';
+
+  const quantifiedBarClass =
+    atsCheck.quantifiedPercent >= 60
+      ? 'bg-emerald-500'
+      : atsCheck.quantifiedPercent >= 35
+      ? 'bg-amber-500'
+      : 'bg-rose-500';
+
   return (
     <div className="space-y-4 print:hidden no-print">
+      {/* Live Action Confirmation Toast */}
+      {actionToast && (
+        <div
+          role="status"
+          className="px-3.5 py-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/35 text-emerald-200 text-xs font-medium flex items-center justify-between gap-2 animate-fade-in-up print:hidden no-print"
+        >
+          <span className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>{actionToast}</span>
+          </span>
+          <button
+            type="button"
+            onClick={() => setActionToast(null)}
+            className="text-emerald-300/70 hover:text-emerald-100 cursor-pointer"
+            aria-label="Dismiss notification"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
       {/* Quick Demo Bar */}
       <div className="p-4 rounded-xl bg-surface-light border border-border space-y-3 print:hidden no-print">
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -147,7 +306,10 @@ export default function RoleFitPanel({
                 <button
                   key={preset.id}
                   type="button"
-                  onClick={() => onSelectPreset(preset)}
+                  onClick={() => {
+                    onSelectPreset(preset);
+                    setActiveDrawer(null);
+                  }}
                   className={`flex items-start gap-2 p-2.5 rounded-lg border text-left transition-all cursor-pointer ${
                     isActive
                       ? 'bg-primary/15 border-primary text-text-primary shadow-sm'
@@ -191,7 +353,10 @@ export default function RoleFitPanel({
             {jdText.trim().length > 0 && (
               <button
                 type="button"
-                onClick={onClearJd}
+                onClick={() => {
+                  onClearJd();
+                  setActiveDrawer(null);
+                }}
                 className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface border border-border text-text-secondary hover:text-danger hover:border-danger/40 transition-colors cursor-pointer"
                 title="Clear job description"
               >
@@ -207,8 +372,8 @@ export default function RoleFitPanel({
           value={jdText}
           onChange={(e) => onJdChange(e.target.value)}
           placeholder="Paste any internship or entry-level job description here to analyze keyword match in real time (100% local in your browser)..."
-          rows={6}
-          className="input-field min-h-[140px] max-h-[280px] resize-y text-xs leading-relaxed"
+          rows={5}
+          className="input-field min-h-[128px] max-h-[260px] resize-y text-xs leading-relaxed"
         />
 
         <div className="flex items-center justify-between text-[11px] text-text-muted">
@@ -245,8 +410,7 @@ export default function RoleFitPanel({
           </h3>
           <p className="text-xs text-text-secondary max-w-sm mx-auto leading-relaxed">
             Pick one of the 3 internship presets above or paste any role description. RoleFit
-            instantly normalizes synonyms (e.g. JS/JavaScript, PM/Product Management) and highlights
-            your matched and missing skills.
+            instantly normalizes synonyms and lets you insert tailored impact bullets in 1 click.
           </p>
         </div>
       ) : analysis.totalKeywords === 0 ? (
@@ -328,7 +492,7 @@ export default function RoleFitPanel({
             </div>
           </div>
 
-          {/* Missing Keywords (Amber Pills) */}
+          {/* Missing Keywords (Clickable Amber Pills) + Inline Action Drawer */}
           <div className="p-4 rounded-xl bg-surface-light border border-border space-y-3 print:hidden no-print">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
@@ -337,7 +501,9 @@ export default function RoleFitPanel({
                   Missing Keywords ({analysis.missingCount})
                 </h4>
               </div>
-              <span className="text-[11px] text-text-muted">Sorted by JD priority</span>
+              <span className="text-[11px] text-amber-300/80">
+                Click any skill to add or insert a bullet
+              </span>
             </div>
 
             {analysis.missingKeywords.length === 0 ? (
@@ -351,21 +517,201 @@ export default function RoleFitPanel({
                     item.category === 'domain'
                       ? 'JD Domain Term'
                       : CATEGORY_LABELS[item.category as SkillCategory];
+                  const isSelected = activeDrawer?.keyword === item.keyword;
                   return (
-                    <span
+                    <button
                       key={item.keyword}
-                      title={`${categoryName} • Mentioned ${item.jdMentions}x in JD`}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-300 border border-amber-500/30 hover:bg-amber-500/20 transition-colors"
+                      type="button"
+                      onClick={() => handleMissingPillClick(item.keyword, item.category)}
+                      title={`Click to add "${item.keyword}" • ${categoryName} • Mentioned ${item.jdMentions}x in JD`}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
+                        isSelected
+                          ? 'bg-amber-500/25 text-amber-100 border-amber-400 ring-2 ring-amber-400/30'
+                          : 'bg-amber-500/10 text-amber-300 border-amber-500/30 hover:bg-amber-500/20 hover:border-amber-400/60'
+                      }`}
                     >
+                      <Plus className="w-3 h-3 shrink-0" />
                       <span>{item.keyword}</span>
                       {item.jdMentions > 1 && (
                         <span className="text-[10px] font-bold px-1 rounded bg-amber-500/20 text-amber-200">
                           {item.jdMentions}&times;
                         </span>
                       )}
-                    </span>
+                    </button>
                   );
                 })}
+              </div>
+            )}
+
+            {/* Inline 1-Click Skill & XYZ Impact-Bullet Inserter Drawer */}
+            {activeDrawer && (
+              <div className="mt-3 p-3.5 rounded-xl bg-surface border border-amber-500/40 space-y-3.5 shadow-lg print:hidden no-print">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-xs font-bold text-text-primary">
+                        Tailor for &ldquo;{activeDrawer.keyword}&rdquo;
+                      </span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-surface-light text-text-secondary border border-border">
+                        {activeDrawer.category === 'domain'
+                          ? 'JD Term'
+                          : CATEGORY_LABELS[activeDrawer.category as SkillCategory]}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-text-muted mt-0.5">
+                      Add directly to your Skills section or insert a student-ready XYZ bullet.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setActiveDrawer(null)}
+                    className="p-1 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-light transition-colors cursor-pointer"
+                    aria-label="Close keyword drawer"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* Action 1: 1-Click Add to Skills */}
+                <div className="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-lg bg-surface-light/70 border border-border">
+                  <div className="text-xs text-text-secondary">
+                    Quickly list <span className="font-semibold text-text-primary">{activeDrawer.keyword}</span> in your Technical Skills
+                  </div>
+                  <button
+                    type="button"
+                    disabled={isDrawerKeywordInSkills}
+                    onClick={() => handleAddSkillFromDrawer(activeDrawer.keyword)}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+                      isDrawerKeywordInSkills
+                        ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 cursor-default'
+                        : 'bg-emerald-500/15 text-emerald-300 border-emerald-500/35 hover:bg-emerald-500/25 cursor-pointer'
+                    }`}
+                  >
+                    {isDrawerKeywordInSkills ? (
+                      <>
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Added to Skills</span>
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>Add to Skills</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* Action 2: Target Entry Picker + XYZ / STAR Bullet Templates */}
+                <div className="space-y-2.5">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <label
+                      htmlFor="rolefit-target-entry"
+                      className="text-[11px] font-bold uppercase tracking-wider text-text-secondary"
+                    >
+                      Insert XYZ / STAR Bullet Into:
+                    </label>
+                    {targetEntries.length > 0 && effectiveTarget && (
+                      <select
+                        id="rolefit-target-entry"
+                        value={effectiveTarget.key}
+                        onChange={(e) => {
+                          setSelectedTargetKey(e.target.value);
+                          setInsertedTemplateIds({});
+                        }}
+                        className="input-field py-1.5 px-2.5 text-xs sm:max-w-[260px]"
+                      >
+                        {targetEntries.map((opt) => (
+                          <option key={opt.key} value={opt.key}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+
+                  {targetEntries.length === 0 ? (
+                    <div className="p-3 rounded-lg bg-surface-light/60 border border-dashed border-border text-xs text-text-secondary flex items-center justify-between gap-2">
+                      <span>Add a Work Experience or Project entry first to insert bullets.</span>
+                      {onJumpToEditor && (
+                        <button
+                          type="button"
+                          onClick={() => onJumpToEditor('experience')}
+                          className="shrink-0 text-primary-light hover:underline font-semibold cursor-pointer"
+                        >
+                          Open Editor &rarr;
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {drawerTemplates.map((tpl) => {
+                        const isInserted = Boolean(insertedTemplateIds[tpl.id]);
+                        return (
+                          <div
+                            key={tpl.id}
+                            className="p-3 rounded-lg bg-surface-light/60 border border-border hover:border-border-light transition-colors space-y-2"
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-primary/15 text-primary-light">
+                                {tpl.tag}
+                              </span>
+                              <button
+                                type="button"
+                                disabled={isInserted}
+                                onClick={() => handleInsertBullet(tpl.id, tpl.text)}
+                                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold border transition-all ${
+                                  isInserted
+                                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 cursor-default'
+                                    : 'bg-primary/15 text-primary-light border-primary/35 hover:bg-primary/25 cursor-pointer'
+                                }`}
+                              >
+                                {isInserted ? (
+                                  <>
+                                    <Check className="w-3 h-3" />
+                                    <span>Inserted</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Plus className="w-3 h-3" />
+                                    <span>Insert Bullet</span>
+                                  </>
+                                )}
+                              </button>
+                            </div>
+                            <p className="text-xs text-text-secondary leading-relaxed">
+                              {renderHighlightedBullet(tpl.text)}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+
+                {/* Ethical Placeholder Reminder */}
+                <div className="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/25 text-[11px] text-amber-200/90">
+                  <div className="flex items-center gap-2">
+                    <Info className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span>
+                      Replace <code className="font-mono text-amber-100">[bracketed placeholders]</code>{' '}
+                      with your real projects and metrics before exporting.
+                    </span>
+                  </div>
+                  {onJumpToEditor && effectiveTarget && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onJumpToEditor(
+                          effectiveTarget.type === 'experience' ? 'experience' : 'projects'
+                        )
+                      }
+                      className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-300 hover:text-amber-100 underline cursor-pointer"
+                    >
+                      <span>Customize in Editor</span>
+                      <ArrowUpRight className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -384,8 +730,8 @@ export default function RoleFitPanel({
 
             {analysis.matchedKeywords.length === 0 ? (
               <p className="text-xs text-text-muted italic">
-                No JD skills matched yet — load the student sample or add matching skills to see
-                your score update live.
+                No JD skills matched yet — load the student sample or click a missing keyword above
+                to see your score update live.
               </p>
             ) : (
               <div className="flex flex-wrap gap-1.5">
@@ -412,6 +758,124 @@ export default function RoleFitPanel({
           </div>
         </>
       )}
+
+      {/* ATS Quick Check Card */}
+      <div className="p-4 rounded-xl bg-surface-light border border-border space-y-4 print:hidden no-print">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-accent" />
+            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">
+              ATS Quick Check
+            </h4>
+          </div>
+          <span
+            title={atsCheck.densityHint}
+            className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold border ${densityBadgeClass}`}
+          >
+            <FileText className="w-3 h-3" />
+            <span>{atsCheck.densityLabel}</span>
+            <span className="opacity-75">
+              &middot; ~{atsCheck.totalWords}w / {atsCheck.totalBullets} bullets
+            </span>
+          </span>
+        </div>
+
+        {/* Quantified Impact Meter */}
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-text-secondary font-medium">Quantified Impact Bullets</span>
+            <span className="font-bold text-text-primary">
+              {atsCheck.quantifiedBullets} / {atsCheck.totalBullets} bullets quantified
+              {atsCheck.totalBullets > 0 && (
+                <span className="text-text-muted font-normal"> ({atsCheck.quantifiedPercent}%)</span>
+              )}
+            </span>
+          </div>
+          <div className="w-full h-2 rounded-full bg-surface overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all duration-500 ease-out ${quantifiedBarClass}`}
+              style={{ width: `${atsCheck.quantifiedPercent}%` }}
+            />
+          </div>
+          <p className="text-[11px] text-text-muted">
+            Counts Experience &amp; Project bullets containing measurable numbers, %, $, or +.
+          </p>
+        </div>
+
+        {/* Weak Starter Verbs Detector */}
+        <div className="border-t border-border/60 pt-3 space-y-2.5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-text-primary">
+              <Zap className="w-3.5 h-3.5 text-amber-400" />
+              <span>Weak Starter Verbs ({atsCheck.weakBullets.length})</span>
+            </div>
+            {atsCheck.weakBullets.length > 0 && (
+              <span className="text-[11px] text-text-muted">1-click upgrade</span>
+            )}
+          </div>
+
+          {atsCheck.totalBullets === 0 ? (
+            <p className="text-xs text-text-muted italic">
+              Add Experience or Project bullets (or load the Student Sample) to run verb &amp; metric
+              checks.
+            </p>
+          ) : atsCheck.weakBullets.length === 0 ? (
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/25 text-xs text-emerald-300">
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+              <span>All {atsCheck.totalBullets} bullets start with strong action verbs!</span>
+            </div>
+          ) : (
+            <div className="space-y-2.5">
+              {atsCheck.weakBullets.map((flag) => (
+                <div
+                  key={flag.id}
+                  className="p-3 rounded-lg bg-surface/80 border border-border space-y-2"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted truncate">
+                      {flag.targetType === 'experience' ? 'Experience' : 'Project'} &middot;{' '}
+                      {flag.entryTitle}
+                    </span>
+                    <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-rose-500/15 text-rose-300 border border-rose-500/30 shrink-0">
+                      Weak opener
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-text-secondary leading-relaxed">
+                    <span className="underline decoration-rose-400 decoration-wavy underline-offset-2 text-rose-300 font-semibold">
+                      {flag.weakPhrase}
+                    </span>
+                    {flag.originalText.slice(flag.weakPhrase.length)}
+                  </p>
+
+                  <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                    <span className="text-[10px] text-text-muted mr-0.5">Swap with:</span>
+                    {flag.suggestions.map((suggestion) => (
+                      <button
+                        key={suggestion.verb}
+                        type="button"
+                        onClick={() =>
+                          handleSwapWeakVerb(flag, suggestion.verb, suggestion.rewrittenBullet)
+                        }
+                        title={`Replace bullet with: "${suggestion.rewrittenBullet}"`}
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-semibold bg-primary/15 text-primary-light border border-primary/30 hover:bg-primary hover:text-white transition-colors cursor-pointer"
+                      >
+                        <span>{suggestion.verb}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* 1-Page Density Guidance */}
+        <p className="text-[11px] text-text-muted border-t border-border/60 pt-2.5">
+          <span className="font-semibold text-text-secondary">1-Page Check:</span>{' '}
+          {atsCheck.densityHint}
+        </p>
+      </div>
     </div>
   );
 }

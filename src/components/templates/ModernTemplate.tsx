@@ -1,13 +1,13 @@
 'use client';
 
-import { ResumeData } from '@/types/resume';
-import { Mail, Phone, MapPin, Globe, Calendar, Briefcase, GraduationCap, FolderGit2 } from 'lucide-react';
+import { ResumeData, SectionId, SpacingStyles } from '@/types/resume';
+import { Mail, Phone, MapPin, Globe, Calendar } from 'lucide-react';
 import { Linkedin, Github } from '@/components/icons/BrandIcons';
 
 
 interface TemplateProps {
   data: ResumeData;
-  s: any; // Spacing settings
+  s: SpacingStyles;
 }
 
 export default function ModernTemplate({ data, s }: TemplateProps) {
@@ -149,11 +149,11 @@ export default function ModernTemplate({ data, s }: TemplateProps) {
 
           {/* Dynamic Sidebar Sections */}
           {(() => {
-            const sidebarSectionIds = ['skills', 'languages', 'certifications'];
-            const order = data.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'languages', 'certifications'];
+            const sidebarSectionIds: SectionId[] = ['skills', 'languages', 'certifications'];
+            const order: SectionId[] = data.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'languages', 'certifications'];
             const orderedSidebar = sidebarSectionIds
-              .filter(id => order.includes(id as any))
-              .sort((a, b) => order.indexOf(a as any) - order.indexOf(b as any));
+              .filter(id => order.includes(id))
+              .sort((a, b) => order.indexOf(a) - order.indexOf(b));
 
             return orderedSidebar.map(id => {
               switch (id) {
@@ -217,11 +217,11 @@ export default function ModernTemplate({ data, s }: TemplateProps) {
         {/* Right Column - Main Content */}
         <div className="w-[67%] p-6 flex flex-col gap-6">
           {(() => {
-            const mainSectionIds = ['summary', 'experience', 'projects', 'education'];
-            const order = data.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'languages', 'certifications'];
+            const mainSectionIds: SectionId[] = ['summary', 'experience', 'projects', 'education'];
+            const order: SectionId[] = data.sectionOrder || ['summary', 'experience', 'projects', 'education', 'skills', 'languages', 'certifications'];
             const orderedMain = mainSectionIds
-              .filter(id => order.includes(id as any))
-              .sort((a, b) => order.indexOf(a as any) - order.indexOf(b as any));
+              .filter(id => order.includes(id))
+              .sort((a, b) => order.indexOf(a) - order.indexOf(b));
 
             return orderedMain.map(id => {
               switch (id) {

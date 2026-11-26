@@ -48,6 +48,18 @@ export type TemplateName = 'modern' | 'executive' | 'minimalist';
 export type SpacingOption = 'compact' | 'normal' | 'spacious';
 export type SectionId = 'summary' | 'experience' | 'projects' | 'education' | 'skills' | 'languages' | 'certifications';
 
+export interface SpacingStyles {
+  sectionGap: string;
+  entryGap: string;
+  itemGap: string;
+  padding: string;
+  margin: string;
+  textBase: string;
+  textLg: string;
+  textXl: string;
+  text2xl: string;
+}
+
 export interface ResumeData {
   personalInfo: PersonalInfo;
   summary: string;
