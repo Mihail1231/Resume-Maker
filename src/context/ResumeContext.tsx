@@ -61,6 +61,7 @@ interface ResumeContextType {
 
   loadSampleData: () => void;
   loadStudentSampleData: () => void;
+  importParsedResume: (data: ResumeData) => void;
   resetData: () => void;
   exportJSON: () => void;
   importJSON: (file: File) => void;
@@ -436,6 +437,27 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
     setResumeData(STUDENT_SAMPLE_RESUME_DATA);
   }, []);
 
+  const importParsedResume = useCallback((data: ResumeData) => {
+    const normalized: ResumeData = {
+      ...DEFAULT_RESUME_DATA,
+      ...data,
+      personalInfo: {
+        ...DEFAULT_RESUME_DATA.personalInfo,
+        ...data.personalInfo,
+      },
+      sectionOrder:
+        data.sectionOrder && data.sectionOrder.length > 0
+          ? data.sectionOrder
+          : DEFAULT_RESUME_DATA.sectionOrder,
+    };
+    setResumeData(normalized);
+    try {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(normalized));
+    } catch {
+      // ignore storage quota errors
+    }
+  }, []);
+
   const resetData = useCallback(() => {
     setResumeData(DEFAULT_RESUME_DATA);
     localStorage.removeItem(LOCAL_STORAGE_KEY);
@@ -500,6 +522,7 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
         moveSection,
         loadSampleData,
         loadStudentSampleData,
+        importParsedResume,
         resetData,
         exportJSON,
         importJSON,

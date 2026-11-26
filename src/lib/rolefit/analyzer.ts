@@ -279,6 +279,22 @@ function getQualificationsBoost(jdText: string, compiled: CompiledSkill): number
   return hasMatch(qualSection, compiled) ? 2 : 0;
 }
 
+/**
+ * Extract all canonical skill names from SKILL_DICTIONARY found anywhere in a block of text.
+ * Used by cvParser.ts to ensure relevant technical & domain skills are not missed.
+ */
+export function extractDictionarySkillsFromText(text: string): string[] {
+  const cleaned = stripLinksAndEmails(text);
+  if (!cleaned.trim()) return [];
+  const matched: string[] = [];
+  for (const compiled of COMPILED_SKILLS) {
+    if (hasMatch(cleaned, compiled)) {
+      matched.push(compiled.entry.canonical);
+    }
+  }
+  return matched;
+}
+
 export function analyzeRoleFit(resume: ResumeData, jdText: string): RoleFitAnalysis {
   const trimmedJD = jdText.trim();
   if (!trimmedJD) {

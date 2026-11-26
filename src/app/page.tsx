@@ -11,6 +11,7 @@ import {
   Target,
   ShieldCheck,
   Wand2,
+  Upload,
 } from 'lucide-react';
 
 const features = [
@@ -61,9 +62,9 @@ const features = [
 const steps = [
   {
     step: '01',
-    title: 'Load Sample or Build Resume',
+    title: 'Upload Your CV, Load Sample, or Build',
     description:
-      'Launch the interactive student sample (Maya Lin) in one click or enter your own education, internships, projects, and skills.',
+      'Upload an existing PDF/DOCX resume locally in your browser, launch the student sample (Maya Lin) in one click, or build from scratch.',
   },
   {
     step: '02',
@@ -141,18 +142,25 @@ export default function HomePage() {
           </p>
 
           <div
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up"
+            className="flex flex-wrap items-center justify-center gap-3.5 animate-fade-in-up"
             style={{ animationDelay: '0.3s' }}
           >
             <Link
               href="/builder?sample=true&mode=tailor"
-              className="btn btn-primary text-base px-8 py-3 animate-pulse-glow"
+              className="btn btn-primary text-base px-7 py-3 animate-pulse-glow"
             >
               <Target className="w-5 h-5" />
               Try Interactive Demo
               <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link href="/builder" className="btn btn-ghost text-base px-8 py-3">
+            <Link
+              href="/builder?import=true"
+              className="btn text-base px-7 py-3 bg-accent/15 text-accent border border-accent/35 hover:bg-accent/25"
+            >
+              <Upload className="w-5 h-5" />
+              Upload CV (PDF / DOCX)
+            </Link>
+            <Link href="/builder" className="btn btn-ghost text-base px-7 py-3">
               <FileText className="w-5 h-5" />
               Start From Scratch
             </Link>
@@ -232,16 +240,23 @@ export default function HomePage() {
               Launch the interactive demo with Maya Lin&apos;s student resume and 3 internship JDs,
               or start crafting your own resume from scratch.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/builder?sample=true&mode=tailor"
-                className="btn btn-primary text-base px-8 py-3.5"
+                className="btn btn-primary text-base px-7 py-3.5"
               >
                 <Zap className="w-5 h-5" />
                 Try Interactive Demo
                 <ArrowRight className="w-5 h-5" />
               </Link>
-              <Link href="/builder" className="btn btn-ghost text-base px-8 py-3.5">
+              <Link
+                href="/builder?import=true"
+                className="btn text-base px-7 py-3.5 bg-accent/15 text-accent border border-accent/35 hover:bg-accent/25"
+              >
+                <Upload className="w-5 h-5" />
+                Upload Existing CV
+              </Link>
+              <Link href="/builder" className="btn btn-ghost text-base px-7 py-3.5">
                 <Download className="w-5 h-5" />
                 Start From Scratch
               </Link>

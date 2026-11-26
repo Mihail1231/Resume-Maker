@@ -25,6 +25,7 @@ import {
   Zap,
   ArrowUpRight,
   FileText,
+  Upload,
 } from 'lucide-react';
 
 interface RoleFitPanelProps {
@@ -35,6 +36,7 @@ interface RoleFitPanelProps {
   onClearJd: () => void;
   analysis: RoleFitAnalysis;
   onJumpToEditor?: (section: 'experience' | 'projects' | 'skills') => void;
+  onOpenCvImport?: () => void;
 }
 
 interface ActiveDrawerKeyword {
@@ -116,6 +118,7 @@ export default function RoleFitPanel({
   onClearJd,
   analysis,
   onJumpToEditor,
+  onOpenCvImport,
 }: RoleFitPanelProps) {
   const {
     resumeData,
@@ -275,23 +278,35 @@ export default function RoleFitPanel({
               Quick Demo Mode
             </span>
           </div>
-          <button
-            type="button"
-            onClick={handleLoadStudentSample}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary/15 text-primary-light border border-primary/30 hover:bg-primary/25 transition-colors cursor-pointer"
-          >
-            {studentLoadedFeedback ? (
-              <>
-                <Check className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-emerald-300">Loaded Maya Lin</span>
-              </>
-            ) : (
-              <>
-                <GraduationCap className="w-3.5 h-3.5" />
-                <span>Load Student Sample Resume</span>
-              </>
+          <div className="flex flex-wrap items-center gap-2">
+            {onOpenCvImport && (
+              <button
+                type="button"
+                onClick={onOpenCvImport}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-accent/15 text-accent border border-accent/35 hover:bg-accent/25 transition-colors cursor-pointer print:hidden no-print"
+              >
+                <Upload className="w-3.5 h-3.5" />
+                <span>Upload CV (PDF / DOCX)</span>
+              </button>
             )}
-          </button>
+            <button
+              type="button"
+              onClick={handleLoadStudentSample}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary/15 text-primary-light border border-primary/30 hover:bg-primary/25 transition-colors cursor-pointer"
+            >
+              {studentLoadedFeedback ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="text-emerald-300">Loaded Maya Lin</span>
+                </>
+              ) : (
+                <>
+                  <GraduationCap className="w-3.5 h-3.5" />
+                  <span>Load Student Sample Resume</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
 
         <div>

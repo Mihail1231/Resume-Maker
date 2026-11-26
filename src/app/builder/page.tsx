@@ -10,6 +10,8 @@ import ProjectsForm from '@/components/editor/ProjectsForm';
 import SkillsForm from '@/components/editor/SkillsForm';
 import ResumePreview from '@/components/preview/ResumePreview';
 import RoleFitPanel from '@/components/rolefit/RoleFitPanel';
+import CvImportModal from '@/components/rolefit/CvImportModal';
+import { ParsedCvResult } from '@/lib/rolefit/cvParser';
 import { SectionId, SpacingOption } from '@/types/resume';
 import {
   analyzeRoleFit,
@@ -115,6 +117,8 @@ function BuilderWorkspace() {
 
   // Left-panel workspace mode & RoleFit JD state
   const [workspaceMode, setWorkspaceMode] = useState<'edit' | 'tailor'>('edit');
+  const [isCvModalOpen, setIsCvModalOpen] = useState(false);
+  const [importToast, setImportToast] = useState<string | null>(null);
   const [jdText, setJdText] = useState('');
   const [activePresetId, setActivePresetId] = useState<string | null>(null);
   const jdHydratedRef = useRef(false);
@@ -126,6 +130,10 @@ function BuilderWorkspace() {
       try {
         const params = new URLSearchParams(window.location.search);
         if (params.get('mode') === 'tailor') {
+          setWorkspaceMode('tailor');
+        }
+        if (params.get('import') === 'true') {
+          setIsCvModalOpen(true);
           setWorkspaceMode('tailor');
         }
 
@@ -190,6 +198,15 @@ function BuilderWorkspace() {
     }));
   };
 
+  const handleCvApplied = (result: ParsedCvResult) => {
+    const { experienceCount, projectCount, skillsCount } = result.report;
+    const summaryMsg = `Imported CV: ${experienceCount} exp, ${projectCount} proj, ${skillsCount} skills — ready to tailor!`;
+    setImportToast(summaryMsg);
+    window.setTimeout(() => {
+      setImportToast((prev) => (prev === summaryMsg ? null : prev));
+    }, 4000);
+  };
+
   const scorePillClass =
     roleFitAnalysis.score >= 75
       ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
@@ -247,6 +264,16 @@ function BuilderWorkspace() {
 
         {/* Action Controls */}
         <div className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() => setIsCvModalOpen(true)}
+            className="btn text-xs px-3 py-2 flex items-center gap-1.5 bg-accent/15 text-accent border border-accent/35 hover:bg-accent/25 print:hidden no-print"
+            title="Upload an existing PDF or DOCX CV to auto-fill your resume"
+          >
+            <Upload className="w-3.5 h-3.5" />
+            <span>Upload CV</span>
+          </button>
+
           <button
             onClick={loadSampleData}
             className="btn btn-ghost text-xs px-3 py-2 flex items-center gap-1.5"
@@ -353,6 +380,22 @@ function BuilderWorkspace() {
             </button>
           </div>
 
+          {importToast && (
+            <div
+              role="status"
+              className="px-3.5 py-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/35 text-emerald-200 text-xs font-medium flex items-center justify-between gap-2 print:hidden no-print"
+            >
+              <span>{importToast}</span>
+              <button
+                type="button"
+                onClick={() => setImportToast(null)}
+                className="text-emerald-300/70 hover:text-emerald-100 text-xs font-bold cursor-pointer"
+              >
+                Dismiss
+              </button>
+            </div>
+          )}
+
           {workspaceMode === 'tailor' ? (
             <RoleFitPanel
               jdText={jdText}
@@ -362,6 +405,7 @@ function BuilderWorkspace() {
               onClearJd={handleClearJd}
               analysis={roleFitAnalysis}
               onJumpToEditor={handleJumpToEditor}
+              onOpenCvImport={() => setIsCvModalOpen(true)}
             />
           ) : (
             <>
@@ -635,6 +679,13 @@ function BuilderWorkspace() {
           <ResumePreview />
         </div>
       </div>
+
+      {/* Client-Side CV Upload Modal (PDF / DOCX / Paste) */}
+      <CvImportModal
+        isOpen={isCvModalOpen}
+        onClose={() => setIsCvModalOpen(false)}
+        onApplied={handleCvApplied}
+      />
     </div>
   );
 }
