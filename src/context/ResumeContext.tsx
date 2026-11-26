@@ -12,7 +12,10 @@ import {
   SpacingOption,
   SectionId,
 } from '@/types/resume';
-import { STUDENT_SAMPLE_RESUME_DATA } from '@/lib/rolefit/demoData';
+import {
+  BUSINESS_SAMPLE_RESUME_DATA,
+  STUDENT_SAMPLE_RESUME_DATA,
+} from '@/lib/rolefit/demoData';
 
 interface ResumeContextType {
   resumeData: ResumeData;
@@ -61,6 +64,7 @@ interface ResumeContextType {
 
   loadSampleData: () => void;
   loadStudentSampleData: () => void;
+  loadBusinessSampleData: () => void;
   importParsedResume: (data: ResumeData) => void;
   resetData: () => void;
   exportJSON: () => void;
@@ -85,6 +89,11 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
         const sampleParam = params.get('sample');
         if (sampleParam === 'true' || sampleParam === 'student') {
           setResumeData(STUDENT_SAMPLE_RESUME_DATA);
+          initialLoadDone.current = true;
+          return;
+        }
+        if (sampleParam === 'business' || sampleParam === 'hsg') {
+          setResumeData(BUSINESS_SAMPLE_RESUME_DATA);
           initialLoadDone.current = true;
           return;
         }
@@ -437,6 +446,10 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
     setResumeData(STUDENT_SAMPLE_RESUME_DATA);
   }, []);
 
+  const loadBusinessSampleData = useCallback(() => {
+    setResumeData(BUSINESS_SAMPLE_RESUME_DATA);
+  }, []);
+
   const importParsedResume = useCallback((data: ResumeData) => {
     const normalized: ResumeData = {
       ...DEFAULT_RESUME_DATA,
@@ -522,6 +535,7 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
         moveSection,
         loadSampleData,
         loadStudentSampleData,
+        loadBusinessSampleData,
         importParsedResume,
         resetData,
         exportJSON,

@@ -2,7 +2,11 @@
 
 import React, { useMemo, useState } from 'react';
 import { useResume } from '@/context/ResumeContext';
-import { PRESET_INTERNSHIP_JDS, PresetJD } from '@/lib/rolefit/demoData';
+import {
+  PRESET_INTERNSHIP_JDS,
+  PresetJD,
+  PresetTrackGroup,
+} from '@/lib/rolefit/demoData';
 import { RoleFitAnalysis } from '@/lib/rolefit/analyzer';
 import { CATEGORY_LABELS, SkillCategory } from '@/lib/rolefit/dictionary';
 import { getBulletTemplatesForKeyword } from '@/lib/rolefit/bulletTemplates';
@@ -26,6 +30,11 @@ import {
   ArrowUpRight,
   FileText,
   Upload,
+  Compass,
+  Landmark,
+  TrendingUp,
+  Rocket,
+  Building2,
 } from 'lucide-react';
 
 interface RoleFitPanelProps {
@@ -81,6 +90,14 @@ function getScoreTheme(score: number) {
 
 function getTrackIcon(track: PresetJD['roleTrack']) {
   switch (track) {
+    case 'consulting':
+      return Compass;
+    case 'finance':
+      return Landmark;
+    case 'vc':
+      return TrendingUp;
+    case 'gtm':
+      return Rocket;
     case 'pm':
       return Briefcase;
     case 'swe':
@@ -123,16 +140,29 @@ export default function RoleFitPanel({
   const {
     resumeData,
     loadStudentSampleData,
+    loadBusinessSampleData,
     addSkillTag,
     appendBulletToEntry,
     replaceBulletText,
   } = useResume();
 
-  const [studentLoadedFeedback, setStudentLoadedFeedback] = useState(false);
+  const [loadedSampleLabel, setLoadedSampleLabel] = useState<string | null>(null);
+  const [selectedTrackGroup, setSelectedTrackGroup] = useState<PresetTrackGroup | null>(null);
   const [activeDrawer, setActiveDrawer] = useState<ActiveDrawerKeyword | null>(null);
   const [selectedTargetKey, setSelectedTargetKey] = useState<string>('');
   const [insertedTemplateIds, setInsertedTemplateIds] = useState<Record<string, boolean>>({});
   const [actionToast, setActionToast] = useState<string | null>(null);
+
+  const activePresetTrackGroup: PresetTrackGroup = useMemo(() => {
+    if (selectedTrackGroup) return selectedTrackGroup;
+    const match = PRESET_INTERNSHIP_JDS.find((p) => p.id === activePresetId);
+    return match ? match.trackGroup : 'business';
+  }, [selectedTrackGroup, activePresetId]);
+
+  const visiblePresets = useMemo(
+    () => PRESET_INTERNSHIP_JDS.filter((p) => p.trackGroup === activePresetTrackGroup),
+    [activePresetTrackGroup]
+  );
 
   const isResumeEmpty =
     !resumeData.personalInfo.fullName &&
@@ -182,8 +212,20 @@ export default function RoleFitPanel({
     loadStudentSampleData();
     setActiveDrawer(null);
     setInsertedTemplateIds({});
-    setStudentLoadedFeedback(true);
-    window.setTimeout(() => setStudentLoadedFeedback(false), 2500);
+    setLoadedSampleLabel('Maya Lin');
+    window.setTimeout(() => {
+      setLoadedSampleLabel((prev) => (prev === 'Maya Lin' ? null : prev));
+    }, 2500);
+  };
+
+  const handleLoadBusinessSample = () => {
+    loadBusinessSampleData();
+    setActiveDrawer(null);
+    setInsertedTemplateIds({});
+    setLoadedSampleLabel('Lukas Weber');
+    window.setTimeout(() => {
+      setLoadedSampleLabel((prev) => (prev === 'Lukas Weber' ? null : prev));
+    }, 2500);
   };
 
   const handleMissingPillClick = (keyword: string, category: SkillCategory | 'domain') => {
@@ -278,12 +320,12 @@ export default function RoleFitPanel({
               Quick Demo Mode
             </span>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-1.5">
             {onOpenCvImport && (
               <button
                 type="button"
                 onClick={onOpenCvImport}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-accent/15 text-accent border border-accent/35 hover:bg-accent/25 transition-colors cursor-pointer print:hidden no-print"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold bg-accent/15 text-accent border border-accent/35 hover:bg-accent/25 transition-colors cursor-pointer print:hidden no-print"
               >
                 <Upload className="w-3.5 h-3.5" />
                 <span>Upload CV (PDF / DOCX)</span>
@@ -291,30 +333,87 @@ export default function RoleFitPanel({
             )}
             <button
               type="button"
-              onClick={handleLoadStudentSample}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary/15 text-primary-light border border-primary/30 hover:bg-primary/25 transition-colors cursor-pointer"
+              onClick={handleLoadBusinessSample}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold bg-indigo-500/15 text-indigo-300 border border-indigo-500/35 hover:bg-indigo-500/25 transition-colors cursor-pointer"
+              title="Load fictional HSG Business Innovation student resume (Lukas Weber)"
             >
-              {studentLoadedFeedback ? (
+              {loadedSampleLabel === 'Lukas Weber' ? (
                 <>
                   <Check className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="text-emerald-300">Loaded Maya Lin</span>
+                  <span className="text-emerald-300">Loaded Lukas</span>
+                </>
+              ) : (
+                <>
+                  <Building2 className="w-3.5 h-3.5" />
+                  <span>HSG Sample</span>
+                </>
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={handleLoadStudentSample}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold bg-primary/15 text-primary-light border border-primary/30 hover:bg-primary/25 transition-colors cursor-pointer"
+              title="Load Tech & CS student sample resume (Maya Lin)"
+            >
+              {loadedSampleLabel === 'Maya Lin' ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="text-emerald-300">Loaded Maya</span>
                 </>
               ) : (
                 <>
                   <GraduationCap className="w-3.5 h-3.5" />
-                  <span>Load Student Sample Resume</span>
+                  <span>Tech Sample</span>
                 </>
               )}
             </button>
           </div>
         </div>
 
-        <div>
-          <p className="text-[11px] text-text-muted mb-2">
-            Try a sample internship job description:
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            {PRESET_INTERNSHIP_JDS.map((preset) => {
+        {/* Preset Role Track Category Tabs */}
+        <div className="space-y-2.5">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span className="text-[11px] text-text-muted">Target Role Presets:</span>
+            <div
+              role="tablist"
+              aria-label="Preset target role categories"
+              className="inline-flex p-0.5 rounded-lg bg-surface border border-border print:hidden no-print"
+            >
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activePresetTrackGroup === 'business'}
+                onClick={() => setSelectedTrackGroup('business')}
+                className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer ${
+                  activePresetTrackGroup === 'business'
+                    ? 'bg-primary text-white shadow-xs'
+                    : 'text-text-secondary hover:text-text-primary'
+                }`}
+              >
+                Business &amp; Finance (HSG)
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activePresetTrackGroup === 'tech'}
+                onClick={() => setSelectedTrackGroup('tech')}
+                className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer ${
+                  activePresetTrackGroup === 'tech'
+                    ? 'bg-primary text-white shadow-xs'
+                    : 'text-text-secondary hover:text-text-primary'
+                }`}
+              >
+                Tech &amp; Product
+              </button>
+            </div>
+          </div>
+
+          <div
+            className={`grid grid-cols-1 gap-2 ${
+              activePresetTrackGroup === 'business' ? 'sm:grid-cols-2' : 'sm:grid-cols-3'
+            }`}
+          >
+            {visiblePresets.map((preset) => {
               const Icon = getTrackIcon(preset.roleTrack);
               const isActive = activePresetId === preset.id;
               return (

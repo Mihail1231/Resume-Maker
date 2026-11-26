@@ -55,8 +55,11 @@ function buildCombinedBoundaryRegex(terms: string[], caseSensitive: boolean): Re
   const sorted = [...terms].sort((a, b) => b.length - a.length);
   const alternation = sorted.map((t) => escapeRegExp(t.trim())).join('|');
   const flags = caseSensitive ? 'g' : 'gi';
-  // Exclude hyphen (-) from boundary chars so "Go" never matches inside "Go-To-Market"
-  return new RegExp(`(?:^|[^a-zA-Z0-9_+#-])(?:${alternation})(?=$|[^a-zA-Z0-9_+#-])`, flags);
+  // Exclude hyphens and Unicode dashes (–/—) from boundary chars so "Go" never matches "Go-To-Market" and "C" never matches "Series A–C"
+  return new RegExp(
+    `(?:^|[^a-zA-Z0-9_+#\\u2013\\u2014-])(?:${alternation})(?=$|[^a-zA-Z0-9_+#\\u2013\\u2014-])`,
+    flags
+  );
 }
 
 const COMPILED_SKILLS: CompiledSkill[] = SKILL_DICTIONARY.map((entry) => {

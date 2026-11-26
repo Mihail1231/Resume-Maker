@@ -348,6 +348,368 @@ const SPECIFIC_TEMPLATES: Record<string, Array<{ tag: string; text: string }>> =
       text: 'Standardized reusable Pivot Tables templates so [team members] could refresh monthly summaries in [X minutes].',
     },
   ],
+
+  // =========================================================================
+  // STRATEGY & MANAGEMENT CONSULTING
+  // =========================================================================
+  'Management Consulting': [
+    {
+      tag: 'Case Impact',
+      text: 'Structured a Management Consulting workstream across [N] client interviews and market datasets, identifying [CHF/EUR XM] in growth opportunities.',
+    },
+    {
+      tag: 'Client Delivery',
+      text: 'Delivered a Management Consulting recommendation deck for [C-level stakeholders], accelerating implementation of [key initiative] by [X weeks].',
+    },
+    {
+      tag: 'Analytical Rigor',
+      text: 'Synthesized operational benchmarks and financial sensitivities during a Management Consulting engagement spanning [N] European markets.',
+    },
+  ],
+  'Strategy Consulting': [
+    {
+      tag: 'Strategic Impact',
+      text: 'Led Strategy Consulting research on [target segment/region], sizing a [CHF/EUR XM] addressable market and defining a 3-pillar entry roadmap.',
+    },
+    {
+      tag: 'Executive Alignment',
+      text: 'Translated complex competitive dynamics into Strategy Consulting board slides endorsed by [N] senior executives.',
+    },
+    {
+      tag: 'Value Creation',
+      text: 'Evaluated [N] strategic options through Strategy Consulting issue trees, prioritizing initiatives projected to lift EBITDA by [X%].',
+    },
+  ],
+  'Commercial Due Diligence': [
+    {
+      tag: 'CDD Workstream',
+      text: 'Supported Commercial Due Diligence for a [CHF/EUR XM] B2B target, interviewing [N+] industry experts and validating [X%] CAGR assumptions.',
+    },
+    {
+      tag: 'Market Assessment',
+      text: 'Built a Commercial Due Diligence competitive landscape comparing [N] peers on pricing, churn, and customer NPS.',
+    },
+    {
+      tag: 'IC Deliverable',
+      text: 'Synthesized Commercial Due Diligence findings into a 25-slide executive summary highlighting [N] key upside levers and risks.',
+    },
+  ],
+  'Market Sizing': [
+    {
+      tag: 'Bottom-Up Model',
+      text: 'Constructed a bottom-up Market Sizing model across [N] DACH customer segments, quantifying a [CHF/EUR XM] SAM for [product/service].',
+    },
+    {
+      tag: 'Decision Support',
+      text: 'Triangulated top-down industry reports and bottom-up Market Sizing assumptions to prioritize [top 2] target verticals.',
+    },
+    {
+      tag: 'Sensitivity Analysis',
+      text: 'Stress-tested Market Sizing growth scenarios across conservative, base, and upside cases for [leadership/founders].',
+    },
+  ],
+  MECE: [
+    {
+      tag: 'Structured Problem Solving',
+      text: 'Decomposed an ambiguous [growth/margin] problem into a MECE issue tree across [N] root-cause drivers, cutting analysis turnaround by [X%].',
+    },
+    {
+      tag: 'Executive Clarity',
+      text: 'Structured C-level steering-committee updates using MECE logic to drive alignment across [N] cross-functional workstreams.',
+    },
+    {
+      tag: 'Workshop Facilitation',
+      text: 'Applied MECE frameworks to synthesize [N+] stakeholder inputs into [3] prioritized strategic recommendations.',
+    },
+  ],
+  'Slide Storylining': [
+    {
+      tag: 'Board Deck',
+      text: 'Authored a [N]-slide executive deck using Pyramid Principle Slide Storylining, securing leadership approval for a [CHF/EUR XM] initiative.',
+    },
+    {
+      tag: 'Client Communication',
+      text: 'Refined complex financial and market findings into action-titled Slide Storylining packs presented to [C-level/partner audience].',
+    },
+    {
+      tag: 'Efficiency',
+      text: 'Built reusable Slide Storylining templates and data charts in PowerPoint/Think-Cell, saving [X hours/week] for the project team.',
+    },
+  ],
+  'Think-Cell': [
+    {
+      tag: 'Consulting Charts',
+      text: 'Created executive waterfall, Marimekko, and CAGR bridge charts in Think-Cell and PowerPoint for [N] C-level steering reviews.',
+    },
+    {
+      tag: 'Dynamic Reporting',
+      text: 'Linked live Excel models directly to Think-Cell slides, eliminating manual chart updates across [N+] recurring board decks.',
+    },
+    {
+      tag: 'Visual Precision',
+      text: 'Standardized visual formatting across [N] client deliverables using Think-Cell, cutting final deck polish time by [X%].',
+    },
+  ],
+  'Market Entry': [
+    {
+      tag: 'Expansion Strategy',
+      text: 'Evaluated [N] European countries for Market Entry across regulatory, pricing, and channel criteria, selecting [top market] worth [CHF/EUR XM].',
+    },
+    {
+      tag: 'GTM Roadmap',
+      text: 'Designed a 12-month Market Entry playbook covering ICP targeting, local partnerships, and unit economics break-even targets.',
+    },
+    {
+      tag: 'Competitive Edge',
+      text: 'Benchmarked [N] local incumbents to define a differentiated Market Entry positioning strategy adopted by [management/founders].',
+    },
+  ],
+
+  // =========================================================================
+  // M&A / INVESTMENT BANKING & VENTURE CAPITAL / PRIVATE EQUITY
+  // =========================================================================
+  'M&A': [
+    {
+      tag: 'Transaction Support',
+      text: 'Supported a [CHF/EUR XM] sell-side M&A mandate across target screening, valuation modeling, and VDR due diligence coordination.',
+    },
+    {
+      tag: 'Target Screening',
+      text: 'Screened [N+] European acquisition targets for a buy-side M&A pipeline, shortlisting [M] high-synergy candidates for MD review.',
+    },
+    {
+      tag: 'Pitch Execution',
+      text: 'Prepared M&A sector briefings, buyer long-lists, and strategic rationale slides for [N] C-suite client pitches.',
+    },
+  ],
+  'DCF Modeling': [
+    {
+      tag: 'Valuation Model',
+      text: 'Built a dynamic 5-year DCF Modeling workbook with WACC, terminal value, and sensitivity tables valuing a [CHF/EUR XM] [sector] company.',
+    },
+    {
+      tag: 'Scenario Analysis',
+      text: 'Modeled bull, base, and downside revenue/EBITDA drivers in DCF Modeling to triangulate an implied EV range of [CHF/EUR X–YM].',
+    },
+    {
+      tag: 'Sanity Checks',
+      text: 'Cross-checked DCF Modeling outputs against trading and precedent multiples to support [investment committee / client advisory] recommendations.',
+    },
+  ],
+  'LBO Modeling': [
+    {
+      tag: 'Returns Analysis',
+      text: 'Constructed an integrated LBO Modeling template with debt tranches, cash sweep, and IRR/MoIC sensitivity grids targeting [X%] IRR.',
+    },
+    {
+      tag: 'Deal Evaluation',
+      text: 'Stress-tested leverage capacity and deleveraging paths in LBO Modeling across [N] exit-multiple and margin-expansion scenarios.',
+    },
+    {
+      tag: 'PE Readiness',
+      text: 'Evaluated a [CHF/EUR XM] buyout case study using LBO Modeling and presented the investment thesis to [senior associates/partners].',
+    },
+  ],
+  'Trading Comps': [
+    {
+      tag: 'Public Multiples',
+      text: 'Compiled Trading Comps (EV/EBITDA, EV/Revenue, P/E) across [N] listed European peers using Capital IQ and Bloomberg.',
+    },
+    {
+      tag: 'Valuation Football Field',
+      text: 'Synthesized Trading Comps and Transaction Comps into a valuation football field anchoring a [CHF/EUR XM] pitchbook.',
+    },
+    {
+      tag: 'Normalization',
+      text: 'Cleaned non-recurring items and calendarized LTM/NTM consensus estimates for Trading Comps across [N] comparable companies.',
+    },
+  ],
+  'Transaction Comps': [
+    {
+      tag: 'Precedent Analysis',
+      text: 'Analyzed [N] European M&A deals to build Transaction Comps tables benchmarking control premiums and EV/EBITDA exit multiples.',
+    },
+    {
+      tag: 'Deal Context',
+      text: 'Mapped historical Transaction Comps in [sector] to substantiate a [X.Xx] valuation range in client pitch materials.',
+    },
+    {
+      tag: 'Database Research',
+      text: 'Extracted deal multiples and earn-out structures from Capital IQ/FactSet to update the team Transaction Comps database.',
+    },
+  ],
+  Valuation: [
+    {
+      tag: 'Multi-Method',
+      text: 'Performed multi-method Valuation (DCF, Trading Comps, Precedent Transactions) for [N] mid-cap [sector] targets valued at [CHF/EUR XM].',
+    },
+    {
+      tag: 'Advisory Impact',
+      text: 'Translated complex Valuation sensitivities into clear football-field visuals used in [N] senior management negotiations.',
+    },
+    {
+      tag: 'Financial Rigor',
+      text: 'Reconciled enterprise-to-equity value bridges (net debt, leases, minority interest) to sharpen Valuation accuracy across [N] models.',
+    },
+  ],
+  Pitchbooks: [
+    {
+      tag: 'Client Advisory',
+      text: 'Co-authored [N] M&A Pitchbooks covering market trends, buyer profiles, and valuation football fields for [sector] CFOs and boards.',
+    },
+    {
+      tag: 'Fast Turnaround',
+      text: 'Delivered zero-defect Pitchbooks and executive teasers under tight 48-hour client deadlines using PowerPoint and Think-Cell.',
+    },
+    {
+      tag: 'Storyline',
+      text: 'Structured financial charts and strategic positioning narratives across Pitchbooks contributing to [N] new advisory mandates.',
+    },
+  ],
+  'Information Memorandum': [
+    {
+      tag: 'Sell-Side Prep',
+      text: 'Drafted market overview, growth story, and historical financial sections of an Information Memorandum for a [CHF/EUR XM] transaction.',
+    },
+    {
+      tag: 'Data Accuracy',
+      text: 'Reconciled KPI tables and management financials inside the Information Memorandum against audited IFRS accounts.',
+    },
+    {
+      tag: 'Investor Q&A',
+      text: 'Supported follow-up buyer inquiries on the Information Memorandum via structured VDR Q&A tracking.',
+    },
+  ],
+  'Capital IQ': [
+    {
+      tag: 'Screening',
+      text: 'Screened [N+] European targets and pulled LTM/NTM financial spreads in Capital IQ to accelerate M&A buyer and peer lists by [X%].',
+    },
+    {
+      tag: 'Excel Add-In',
+      text: 'Automated live Trading Comps refresh templates via the Capital IQ Excel plug-in, saving [X hours/week] across deal teams.',
+    },
+    {
+      tag: 'Precedents',
+      text: 'Extracted transaction multiples and ownership structures from Capital IQ for [N] sector pitchbooks.',
+    },
+  ],
+  'Deal Sourcing': [
+    {
+      tag: 'Origination',
+      text: 'Led outbound Deal Sourcing across [N+] DACH B2B SaaS and AI startups, booking [M] qualified founder calls for the investment team.',
+    },
+    {
+      tag: 'Pipeline Tracking',
+      text: 'Built a structured Deal Sourcing pipeline in CRM tracking [N+] early-stage companies by ARR band, traction, and thesis fit.',
+    },
+    {
+      tag: 'Ecosystem Reach',
+      text: 'Leveraged university and startup-conference networks to generate [N] proprietary Deal Sourcing leads within [X months].',
+    },
+  ],
+  'Investment Memo': [
+    {
+      tag: 'IC Deliverable',
+      text: 'Authored [N] Investment Memo deep dives covering market sizing, unit economics, competitive moat, and return scenarios for partner review.',
+    },
+    {
+      tag: 'Diligence Synthesis',
+      text: 'Synthesized [N] customer reference calls and financial cohorts into a concise Investment Memo supporting a [CHF/EUR XM] ticket evaluation.',
+    },
+    {
+      tag: 'Thesis Framing',
+      text: 'Articulated bull/bear risks and valuation sensitivities in an Investment Memo that advanced [company] to final Investment Committee.',
+    },
+  ],
+  'Unit Economics': [
+    {
+      tag: 'SaaS Analysis',
+      text: 'Analyzed cohort-level Unit Economics (ARR, LTV/CAC, payback period, net dollar retention) across [N+] B2B customers in Excel/SQL.',
+    },
+    {
+      tag: 'Margin Drivers',
+      text: 'Identified customer segments with [X.Xx] stronger Unit Economics, guiding GTM reallocation that improved payback by [Y months].',
+    },
+    {
+      tag: 'Diligence',
+      text: 'Built a Unit Economics bridge reconciling gross margin, churn, and expansion ARR for [investor/management] review.',
+    },
+  ],
+  'Market Mapping': [
+    {
+      tag: 'Sector Deep Dive',
+      text: 'Created a comprehensive Market Mapping of [N+] European [AI/Fintech/Climate] startups segmented by value chain, funding, and traction.',
+    },
+    {
+      tag: 'Sourcing Input',
+      text: 'Translated Market Mapping whitespace findings into a prioritized outreach list of [M] high-conviction targets.',
+    },
+    {
+      tag: 'Executive Brief',
+      text: 'Presented quarterly Market Mapping benchmarks to [partners/founders], highlighting emerging M&A and partnership candidates.',
+    },
+  ],
+
+  // =========================================================================
+  // FOUNDER'S ASSOCIATE / GTM & AI INNOVATION
+  // =========================================================================
+  'Go-To-Market': [
+    {
+      tag: 'GTM Execution',
+      text: 'Spearheaded a DACH Go-To-Market launch across [N+] target accounts, sharpening ICP messaging and lifting demo conversion by [X%].',
+    },
+    {
+      tag: 'Funnel Impact',
+      text: 'Built and tracked end-to-end Go-To-Market KPIs in CRM across outbound, events, and partner channels, generating [CHF/EUR XK] in pipeline.',
+    },
+    {
+      tag: 'Founder Support',
+      text: 'Translated C-level customer interviews into refined Go-To-Market positioning, pricing tiers, and sales enablement decks.',
+    },
+  ],
+  'AI Workflow Design': [
+    {
+      tag: 'Automation ROI',
+      text: 'Designed and deployed an AI Workflow Design pipeline automating [lead research/reporting/document triage], saving [X hours/week].',
+    },
+    {
+      tag: 'Business Impact',
+      text: 'Mapped [N] manual business processes and delivered an AI Workflow Design prototype cutting turnaround time by [X%].',
+    },
+    {
+      tag: 'Adoption',
+      text: 'Partnered with non-technical stakeholders to roll out reliable AI Workflow Design guardrails and prompt templates across [N] team members.',
+    },
+  ],
+  'LLM Prototyping': [
+    {
+      tag: 'Rapid Prototype',
+      text: 'Built [N] working LLM Prototyping workflows for [customer discovery/knowledge retrieval], validating business value with [M] pilot users.',
+    },
+    {
+      tag: 'Evaluation',
+      text: 'Iterated on prompts, structured outputs, and accuracy benchmarks in LLM Prototyping, lifting output reliability from [X%] to [Y%].',
+    },
+    {
+      tag: 'Commercialization',
+      text: 'Turned founder concepts into interactive LLM Prototyping demos used in [N] enterprise client pitches.',
+    },
+  ],
+  'Pricing Strategy': [
+    {
+      tag: 'Monetization',
+      text: 'Modeled [3] B2B Pricing Strategy tiers using willingness-to-pay interviews and competitor benchmarks, lifting projected ACV by [X%].',
+    },
+    {
+      tag: 'Business Case',
+      text: 'Analyzed gross margin and expansion levers to refine Pricing Strategy packaging for [N+] SME and enterprise accounts.',
+    },
+    {
+      tag: 'Experimentation',
+      text: 'Tested value-based Pricing Strategy proposals across [N] live prospect negotiations, improving win rate by [X%].',
+    },
+  ],
 };
 
 function getCategoryFallbackTemplates(
@@ -355,6 +717,36 @@ function getCategoryFallbackTemplates(
   category: SkillCategory | 'domain'
 ): Array<{ tag: string; text: string }> {
   switch (category) {
+    case 'consulting':
+      return [
+        {
+          tag: 'Consulting Impact',
+          text: `Structured a ${keyword} workstream across [N] interviews and market datasets, identifying [CHF/EUR XM] in actionable value-creation potential.`,
+        },
+        {
+          tag: 'Executive Delivery',
+          text: `Synthesized quantitative analysis into board-ready ${keyword} slides presented to [C-level/senior stakeholders], driving alignment on [3] priorities.`,
+        },
+        {
+          tag: 'Problem Solving',
+          text: `Applied ${keyword} best practices across [N] cross-functional workstreams, shortening client decision cycles by [X%].`,
+        },
+      ];
+    case 'finance':
+      return [
+        {
+          tag: 'Deal / Model Impact',
+          text: `Built dynamic ${keyword} analyses in Excel evaluating a [CHF/EUR XM] [sector] transaction across conservative, base, and upside cases.`,
+        },
+        {
+          tag: 'IC / Pitch Deliverable',
+          text: `Synthesized ${keyword} findings into client-ready pitchbooks and memos reviewed by [Directors/Partners] under tight deal timelines.`,
+        },
+        {
+          tag: 'Analytical Rigor',
+          text: `Reconciled financial statements and peer benchmarks for ${keyword} across [N+] European companies to sharpen valuation precision.`,
+        },
+      ];
     case 'swe':
       return [
         {

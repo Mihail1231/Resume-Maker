@@ -134,23 +134,29 @@ const WEAK_STARTER_RULES: WeakRule[] = [
 
 /**
  * Detect whether a bullet contains meaningful quantification:
- * percentages (25%, [X%]), currency ($10K), multipliers (2x), counts (40+, 12,000, 3 halls).
+ * percentages (25%, [X%]), currencies ($10K, CHF 4.2M, EUR 2M, €500K), ratios/GPAs (5.40/6.0, 110/120),
+ * ranges (20-50), multipliers (2x), and counts (40+, 150,000, 300 days, 3 halls).
  * Excludes standalone 4-digit calendar years (1990–2039).
  */
 export function isBulletQuantified(bullet: string): boolean {
   const text = bullet.trim();
   if (!text) return false;
 
-  // Placeholder metrics like [X%], [N+], [$X] also indicate quantified structure
-  if (/\[\s*(?:\$)?[xn]\s*[%+x]?\s*\]/i.test(text)) return true;
-  if (/\$[\d,.]+|\d+(?:\.\d+)?%|\b\d+(?:,\d{3})*\+|\b\d+(?:\.\d+)?x\b/i.test(text)) {
+  // Placeholder metrics like [X%], [N+], [$X], [CHF/EUR XM] also indicate quantified structure
+  if (/\[\s*(?:\$|€|CHF|EUR|CHF\/EUR)?\s*[xnm]\s*[%+xMmKk]?\s*\]/i.test(text)) return true;
+  if (
+    /(?:\$|€|£|CHF\s*|EUR\s*)[\d,.]+[KkMmBb]?|\d+(?:\.\d+)?%|\b\d+(?:[.,]\d+)?\s*\/\s*\d+(?:[.,]\d+)?\b|\b\d+(?:[.,']\d{3})*\+|\b\d+(?:\.\d+)?x\b/i.test(
+      text
+    )
+  ) {
     return true;
   }
 
-  // Check remaining numbers while ignoring standalone years (1990–2039)
-  const numbers = text.match(/\b\d+(?:,\d{3})*(?:\.\d+)?\b/g) || [];
+  // Check remaining numbers (including Swiss/EU thousands separators 150'000 / 150,000 and ranges 20-50)
+  // while ignoring standalone years (1990–2039)
+  const numbers = text.match(/\b\d+(?:[,'’]\d{3})*(?:\.\d+)?\b/g) || [];
   return numbers.some((numStr) => {
-    const clean = numStr.replace(/,/g, '');
+    const clean = numStr.replace(/[,’']/g, '');
     const n = Number(clean);
     if (clean.length === 4 && n >= 1990 && n <= 2039) return false;
     return !Number.isNaN(n);

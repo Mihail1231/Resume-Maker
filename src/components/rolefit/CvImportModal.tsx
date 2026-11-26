@@ -451,6 +451,12 @@ export default function CvImportModal({ isOpen, onClose, onApplied }: CvImportMo
                     </div>
                     <div className="text-xs font-bold text-text-primary">
                       {parsedResult.report.skillsCount} skills matched
+                      {parsedResult.report.languagesCount > 0 && (
+                        <span className="text-text-muted font-normal">
+                          {' '}
+                          &middot; {parsedResult.report.languagesCount} languages
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
