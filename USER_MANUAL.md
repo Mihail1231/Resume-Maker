@@ -1,6 +1,6 @@
 # RoleFit Resume Tailor — User Manual
 
-**Live Demo URL:** [PASTE_LIVE_URL_HERE]
+**Live Demo URL:** https://rolefit-resume-tailor.vercel.app/
 
 RoleFit Resume Tailor helps students and early-career applicants tailor their CV to any internship or graduate job description in real time—with a live **RoleFit Score (0–100%)**, 1-click XYZ impact bullets, an **ATS Quick Check**, client-side PDF/DOCX CV upload, and crisp 1- or 2-page A4 PDF export.
 
