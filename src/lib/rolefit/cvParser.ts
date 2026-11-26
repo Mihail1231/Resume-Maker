@@ -502,11 +502,17 @@ function extractPersonalInfo(
   }
 
   if (nonContactLines.length > 1) {
-    const second = nonContactLines[1].trim();
-    if (second.length <= 120 && !EMAIL_REGEX.test(second) && !PHONE_REGEX.test(second)) {
-      jobTitle = second;
-    } else if (second.length > 120) {
-      inlineSummary = nonContactLines.slice(1).join(' ');
+    // Skip any repeated name line so jobTitle never duplicates fullName
+    const remainingLines = nonContactLines
+      .slice(1)
+      .filter((line) => line.toLowerCase() !== fullName.toLowerCase());
+    if (remainingLines.length > 0) {
+      const second = remainingLines[0].trim();
+      if (second.length <= 120 && !EMAIL_REGEX.test(second) && !PHONE_REGEX.test(second)) {
+        jobTitle = second;
+      } else if (second.length > 120) {
+        inlineSummary = remainingLines.join(' ');
+      }
     }
   }
 
@@ -1433,8 +1439,9 @@ export function parseCvText(
     certifications,
     themeColor: preserveStyle?.themeColor || DEFAULT_RESUME_DATA.themeColor,
     fontFamily: preserveStyle?.fontFamily || DEFAULT_RESUME_DATA.fontFamily,
-    spacing: preserveStyle?.spacing || DEFAULT_RESUME_DATA.spacing,
+    spacing: 'compact',
     template: preserveStyle?.template || DEFAULT_RESUME_DATA.template,
+    showProfileImage: false,
     sectionOrder: preserveStyle?.sectionOrder || defaultOrder,
   };
 

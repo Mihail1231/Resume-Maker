@@ -113,8 +113,9 @@ export const STUDENT_SAMPLE_RESUME_DATA: ResumeData = {
   certifications: ['Google Data Analytics Certificate (In Progress)'],
   themeColor: '#2563eb',
   fontFamily: 'Inter',
-  spacing: 'normal',
+  spacing: 'compact',
   template: 'modern',
+  showProfileImage: false,
   sectionOrder: ['summary', 'education', 'experience', 'projects', 'skills', 'languages', 'certifications'],
 };
 
@@ -218,8 +219,9 @@ export const BUSINESS_SAMPLE_RESUME_DATA: ResumeData = {
   certifications: ['Bloomberg Market Concepts (BMC)'],
   themeColor: '#1e3a8a',
   fontFamily: 'Inter',
-  spacing: 'normal',
+  spacing: 'compact',
   template: 'executive',
+  showProfileImage: false,
   sectionOrder: ['summary', 'education', 'experience', 'projects', 'skills', 'languages', 'certifications'],
 };
 

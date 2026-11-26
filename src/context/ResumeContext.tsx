@@ -58,6 +58,7 @@ interface ResumeContextType {
   setThemeColor: (color: string) => void;
   setFontFamily: (font: string) => void;
   setSpacing: (spacing: SpacingOption) => void;
+  setShowProfileImage: (show: boolean) => void;
   
   updateSectionOrder: (order: SectionId[]) => void;
   moveSection: (id: SectionId, direction: 'up' | 'down') => void;
@@ -162,6 +163,7 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
         const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
         setResumeData((prev) => ({
           ...prev,
+          showProfileImage: true,
           personalInfo: { ...prev.personalInfo, profileImage: dataUrl },
         }));
       };
@@ -173,6 +175,7 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
   const removeProfileImage = useCallback(() => {
     setResumeData((prev) => ({
       ...prev,
+      showProfileImage: false,
       personalInfo: { ...prev.personalInfo, profileImage: undefined },
     }));
   }, []);
@@ -420,6 +423,10 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
     setResumeData((prev) => ({ ...prev, spacing }));
   }, []);
 
+  const setShowProfileImage = useCallback((show: boolean) => {
+    setResumeData((prev) => ({ ...prev, showProfileImage: show }));
+  }, []);
+
   const updateSectionOrder = useCallback((order: SectionId[]) => {
     setResumeData((prev) => ({ ...prev, sectionOrder: order }));
   }, []);
@@ -451,12 +458,16 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const importParsedResume = useCallback((data: ResumeData) => {
+    const hasPhoto = Boolean(data.personalInfo?.profileImage?.trim());
     const normalized: ResumeData = {
       ...DEFAULT_RESUME_DATA,
       ...data,
+      spacing: 'compact',
+      showProfileImage: hasPhoto,
       personalInfo: {
         ...DEFAULT_RESUME_DATA.personalInfo,
         ...data.personalInfo,
+        profileImage: hasPhoto ? data.personalInfo.profileImage : undefined,
       },
       sectionOrder:
         data.sectionOrder && data.sectionOrder.length > 0
@@ -531,6 +542,7 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
         setThemeColor,
         setFontFamily,
         setSpacing,
+        setShowProfileImage,
         updateSectionOrder,
         moveSection,
         loadSampleData,

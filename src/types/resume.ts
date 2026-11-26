@@ -49,15 +49,19 @@ export type SpacingOption = 'compact' | 'normal' | 'spacious';
 export type SectionId = 'summary' | 'experience' | 'projects' | 'education' | 'skills' | 'languages' | 'certifications';
 
 export interface SpacingStyles {
+  isCompact: boolean;
+  pagePadding: string;
+  headerPadding: string;
   sectionGap: string;
   entryGap: string;
-  itemGap: string;
-  padding: string;
-  margin: string;
-  textBase: string;
-  textLg: string;
-  textXl: string;
-  text2xl: string;
+  bulletGap: string;
+  headingMargin: string;
+  photoSize: string;
+  fontXs: string;
+  fontBase: string;
+  fontLg: string;
+  fontName: string;
+  lineHeight: string;
 }
 
 export interface ResumeData {
@@ -73,6 +77,7 @@ export interface ResumeData {
   fontFamily: string;
   spacing: SpacingOption;
   template: TemplateName;
+  showProfileImage?: boolean;
   sectionOrder?: SectionId[];
 }
 
@@ -96,8 +101,9 @@ export const DEFAULT_RESUME_DATA: ResumeData = {
   certifications: [],
   themeColor: '#2563eb',
   fontFamily: 'Inter',
-  spacing: 'normal',
+  spacing: 'compact',
   template: 'modern',
+  showProfileImage: false,
   sectionOrder: ['summary', 'experience', 'projects', 'education', 'skills', 'languages', 'certifications'],
 };
 
@@ -204,7 +210,8 @@ export const SAMPLE_RESUME_DATA: ResumeData = {
   ],
   themeColor: '#2563eb',
   fontFamily: 'Inter',
-  spacing: 'normal',
+  spacing: 'compact',
   template: 'modern',
+  showProfileImage: false,
   sectionOrder: ['summary', 'experience', 'projects', 'education', 'skills', 'languages', 'certifications'],
 };

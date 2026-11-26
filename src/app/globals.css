@@ -275,14 +275,15 @@ body {
 @media print {
   @page {
     size: A4;
-    margin-top: 15mm;
-    margin-bottom: 15mm;
+    margin-top: 10mm;
+    margin-bottom: 10mm;
     margin-left: 0;
     margin-right: 0;
   }
 
   @page :first {
     margin-top: 0;
+    margin-bottom: 0;
   }
 
   html,
@@ -314,8 +315,9 @@ body {
     box-shadow: none !important;
   }
 
-  /* Hide navigation, header, sidebar controls, editor panels and everything with no-print */
+  /* Hide navigation, header, sidebar controls, page-break guides, editor panels and everything with no-print */
   .no-print,
+  .page-break-guide,
   nav,
   header,
   .editor-panel,

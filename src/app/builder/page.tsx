@@ -67,6 +67,7 @@ function BuilderWorkspace() {
     setThemeColor,
     setFontFamily,
     setSpacing,
+    setShowProfileImage,
     updateSectionOrder,
     moveSection,
     loadSampleData,
@@ -497,11 +498,36 @@ function BuilderWorkspace() {
                       onChange={(e) => setSpacing(e.target.value as SpacingOption)}
                       className="input-field"
                     >
-                      <option value="compact">Compact</option>
+                      <option value="compact">Compact (1-Page Fit)</option>
                       <option value="normal">Normal</option>
-                      <option value="spacious">Spacious</option>
+                      <option value="spacious">Relaxed</option>
                     </select>
                   </div>
+                </div>
+
+                {/* Show Profile Photo Toggle */}
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-surface border border-border">
+                  <div>
+                    <div className="text-xs font-semibold text-text-primary">Show Profile Photo</div>
+                    <div className="text-[11px] text-text-muted">
+                      {resumeData.personalInfo.profileImage
+                        ? 'Toggle compact avatar in header'
+                        : 'Off by default · Upload a photo in Personal Info'}
+                    </div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={Boolean(
+                        resumeData.showProfileImage && resumeData.personalInfo.profileImage
+                      )}
+                      disabled={!resumeData.personalInfo.profileImage}
+                      onChange={(e) => setShowProfileImage(e.target.checked)}
+                      aria-label="Show Profile Photo"
+                    />
+                    <div className="w-9 h-5 bg-surface-lighter rounded-full peer peer-disabled:opacity-40 peer-checked:bg-primary after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4" />
+                  </label>
                 </div>
 
                 {/* Section Reordering */}
