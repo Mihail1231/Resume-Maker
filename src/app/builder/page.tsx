@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { ResumeProvider, useResume } from '@/context/ResumeContext';
 import PersonalInfoForm from '@/components/editor/PersonalInfoForm';
@@ -9,13 +9,18 @@ import EducationForm from '@/components/editor/EducationForm';
 import ProjectsForm from '@/components/editor/ProjectsForm';
 import SkillsForm from '@/components/editor/SkillsForm';
 import ResumePreview from '@/components/preview/ResumePreview';
-import { SectionId } from '@/types/resume';
+import RoleFitPanel from '@/components/rolefit/RoleFitPanel';
+import {
+  analyzeRoleFit,
+  ROLEFIT_JD_STORAGE_KEY,
+  ROLEFIT_PRESET_STORAGE_KEY,
+} from '@/lib/rolefit/analyzer';
+import { PresetJD } from '@/lib/rolefit/demoData';
 import {
   FileText,
   Sparkles,
   Download,
   Upload,
-  RefreshCw,
   Trash2,
   ChevronDown,
   ChevronUp,
@@ -27,6 +32,8 @@ import {
   Palette,
   ArrowLeft,
   GripVertical,
+  SlidersHorizontal,
+  Target,
 } from 'lucide-react';
 
 const COLORS = [
@@ -105,6 +112,74 @@ function BuilderWorkspace() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Left-panel workspace mode & RoleFit JD state
+  const [workspaceMode, setWorkspaceMode] = useState<'edit' | 'tailor'>('edit');
+  const [jdText, setJdText] = useState('');
+  const [activePresetId, setActivePresetId] = useState<string | null>(null);
+  const jdHydratedRef = useRef(false);
+
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('mode') === 'tailor') {
+        setWorkspaceMode('tailor');
+      }
+
+      const savedJd = localStorage.getItem(ROLEFIT_JD_STORAGE_KEY);
+      if (savedJd !== null) {
+        setJdText(savedJd);
+      }
+      const savedPreset = localStorage.getItem(ROLEFIT_PRESET_STORAGE_KEY);
+      if (savedPreset) {
+        setActivePresetId(savedPreset);
+      }
+    } catch {
+      // ignore storage errors
+    }
+    jdHydratedRef.current = true;
+  }, []);
+
+  useEffect(() => {
+    if (!jdHydratedRef.current) return;
+    try {
+      localStorage.setItem(ROLEFIT_JD_STORAGE_KEY, jdText);
+      if (activePresetId) {
+        localStorage.setItem(ROLEFIT_PRESET_STORAGE_KEY, activePresetId);
+      } else {
+        localStorage.removeItem(ROLEFIT_PRESET_STORAGE_KEY);
+      }
+    } catch {
+      // ignore storage quota errors
+    }
+  }, [jdText, activePresetId]);
+
+  const roleFitAnalysis = useMemo(
+    () => analyzeRoleFit(resumeData, jdText),
+    [resumeData, jdText]
+  );
+
+  const handleJdChange = (value: string) => {
+    setJdText(value);
+    setActivePresetId(null);
+  };
+
+  const handleSelectPreset = (preset: PresetJD) => {
+    setJdText(preset.description);
+    setActivePresetId(preset.id);
+  };
+
+  const handleClearJd = () => {
+    setJdText('');
+    setActivePresetId(null);
+  };
+
+  const scorePillClass =
+    roleFitAnalysis.score >= 75
+      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+      : roleFitAnalysis.score >= 50
+      ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+      : 'bg-rose-500/20 text-rose-300 border-rose-500/30';
+
   // Accordion state
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     styling: true,
@@ -133,7 +208,7 @@ function BuilderWorkspace() {
   return (
     <div className="min-h-screen bg-surface flex flex-col text-text-primary">
       {/* Header Toolbar */}
-      <header className="h-16 border-b border-border bg-surface-light fixed top-0 left-0 right-0 z-40 px-6 flex items-center justify-between no-print glass">
+      <header className="h-16 border-b border-border bg-surface-light fixed top-0 left-0 right-0 z-40 px-6 flex items-center justify-between no-print print:hidden glass">
         <div className="flex items-center gap-4">
           <Link
             href="/"
@@ -211,10 +286,68 @@ function BuilderWorkspace() {
 
       {/* Main Workspace Layout */}
       <div className="flex-1 pt-16 flex flex-col lg:flex-row min-h-screen">
-        {/* Left Panel: Form Editors */}
-        <div className="w-full lg:w-[45%] border-r border-border bg-surface-light/40 overflow-y-auto p-6 space-y-4 no-print editor-panel">
-          
-          {/* Section 1: Styling & Template Controls */}
+        {/* Left Panel: Form Editors & RoleFit Tailor */}
+        <div className="w-full lg:w-[45%] border-r border-border bg-surface-light/40 overflow-y-auto p-6 space-y-4 no-print print:hidden editor-panel">
+          {/* Segmented Mode Toggle */}
+          <div
+            role="tablist"
+            aria-label="Builder workspace mode"
+            className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-surface border border-border print:hidden no-print"
+          >
+            <button
+              type="button"
+              role="tab"
+              aria-selected={workspaceMode === 'edit'}
+              onClick={() => setWorkspaceMode('edit')}
+              className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                workspaceMode === 'edit'
+                  ? 'bg-primary text-white shadow-sm'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-surface-light/60'
+              }`}
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              <span>Edit Resume</span>
+            </button>
+
+            <button
+              type="button"
+              role="tab"
+              aria-selected={workspaceMode === 'tailor'}
+              onClick={() => setWorkspaceMode('tailor')}
+              className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                workspaceMode === 'tailor'
+                  ? 'bg-gradient-to-r from-primary to-accent text-white shadow-sm'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-surface-light/60'
+              }`}
+            >
+              <Target className="w-3.5 h-3.5" />
+              <span>RoleFit Tailor</span>
+              {roleFitAnalysis.hasJD && roleFitAnalysis.totalKeywords > 0 && (
+                <span
+                  className={`px-1.5 py-0.5 rounded-full text-[10px] font-extrabold border ${
+                    workspaceMode === 'tailor'
+                      ? 'bg-white/20 text-white border-white/30'
+                      : scorePillClass
+                  }`}
+                >
+                  {roleFitAnalysis.score}%
+                </span>
+              )}
+            </button>
+          </div>
+
+          {workspaceMode === 'tailor' ? (
+            <RoleFitPanel
+              jdText={jdText}
+              onJdChange={handleJdChange}
+              activePresetId={activePresetId}
+              onSelectPreset={handleSelectPreset}
+              onClearJd={handleClearJd}
+              analysis={roleFitAnalysis}
+            />
+          ) : (
+            <>
+              {/* Section 1: Styling & Template Controls */}
           <div className="editor-section">
             <div
               onClick={() => toggleSection('styling')}
@@ -470,7 +603,8 @@ function BuilderWorkspace() {
               </div>
             )}
           </div>
-
+            </>
+          )}
         </div>
 
         {/* Right Panel: Live PDF Preview */}

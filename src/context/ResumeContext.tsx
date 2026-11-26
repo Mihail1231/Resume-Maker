@@ -12,6 +12,7 @@ import {
   SpacingOption,
   SectionId,
 } from '@/types/resume';
+import { STUDENT_SAMPLE_RESUME_DATA } from '@/lib/rolefit/demoData';
 
 interface ResumeContextType {
   resumeData: ResumeData;
@@ -35,6 +36,12 @@ interface ResumeContextType {
   removeProject: (id: string) => void;
 
   updateSkills: (skills: string[]) => void;
+  addSkillTag: (skill: string) => void;
+  appendBulletToEntry: (
+    targetType: 'experience' | 'project',
+    entryId: string,
+    bulletText: string
+  ) => void;
   updateLanguages: (languages: string[]) => void;
   updateCertifications: (certifications: string[]) => void;
 
@@ -47,6 +54,7 @@ interface ResumeContextType {
   moveSection: (id: SectionId, direction: 'up' | 'down') => void;
 
   loadSampleData: () => void;
+  loadStudentSampleData: () => void;
   resetData: () => void;
   exportJSON: () => void;
   importJSON: (file: File) => void;
@@ -60,9 +68,22 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
   const [resumeData, setResumeData] = useState<ResumeData>(DEFAULT_RESUME_DATA);
   const initialLoadDone = useRef(false);
 
-  // Load from localStorage on mount
+  // Load from query param (?sample=true) or localStorage on mount (static-export safe)
   useEffect(() => {
     try {
+      const params = new URLSearchParams(window.location.search);
+      const sampleParam = params.get('sample');
+      if (sampleParam === 'true' || sampleParam === 'student') {
+        setResumeData(STUDENT_SAMPLE_RESUME_DATA);
+        initialLoadDone.current = true;
+        return;
+      }
+      if (sampleParam === 'senior') {
+        setResumeData(SAMPLE_RESUME_DATA);
+        initialLoadDone.current = true;
+        return;
+      }
+
       const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
@@ -265,6 +286,54 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
     setResumeData((prev) => ({ ...prev, skills }));
   }, []);
 
+  const addSkillTag = useCallback((skill: string) => {
+    const trimmed = skill.trim();
+    if (!trimmed) return;
+    setResumeData((prev) => {
+      const alreadyExists = prev.skills.some(
+        (existing) => existing.trim().toLowerCase() === trimmed.toLowerCase()
+      );
+      if (alreadyExists) return prev;
+      return { ...prev, skills: [...prev.skills, trimmed] };
+    });
+  }, []);
+
+  const appendBulletToEntry = useCallback(
+    (targetType: 'experience' | 'project', entryId: string, bulletText: string) => {
+      const trimmed = bulletText.trim();
+      if (!trimmed) return;
+
+      if (targetType === 'experience') {
+        setResumeData((prev) => ({
+          ...prev,
+          workExperience: prev.workExperience.map((exp) => {
+            if (exp.id !== entryId) return exp;
+            const hasOnlyBlank =
+              exp.description.length === 1 && exp.description[0].trim() === '';
+            return {
+              ...exp,
+              description: hasOnlyBlank ? [trimmed] : [...exp.description, trimmed],
+            };
+          }),
+        }));
+      } else {
+        setResumeData((prev) => ({
+          ...prev,
+          projects: prev.projects.map((proj) => {
+            if (proj.id !== entryId) return proj;
+            const hasOnlyBlank =
+              proj.description.length === 1 && proj.description[0].trim() === '';
+            return {
+              ...proj,
+              description: hasOnlyBlank ? [trimmed] : [...proj.description, trimmed],
+            };
+          }),
+        }));
+      }
+    },
+    []
+  );
+
   const updateLanguages = useCallback((languages: string[]) => {
     setResumeData((prev) => ({ ...prev, languages }));
   }, []);
@@ -310,6 +379,10 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
   // --- Data operations ---
   const loadSampleData = useCallback(() => {
     setResumeData(SAMPLE_RESUME_DATA);
+  }, []);
+
+  const loadStudentSampleData = useCallback(() => {
+    setResumeData(STUDENT_SAMPLE_RESUME_DATA);
   }, []);
 
   const resetData = useCallback(() => {
@@ -363,6 +436,8 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
         updateProject,
         removeProject,
         updateSkills,
+        addSkillTag,
+        appendBulletToEntry,
         updateLanguages,
         updateCertifications,
         setTemplate,
@@ -372,6 +447,7 @@ export function ResumeProvider({ children }: { children: React.ReactNode }) {
         updateSectionOrder,
         moveSection,
         loadSampleData,
+        loadStudentSampleData,
         resetData,
         exportJSON,
         importJSON,
