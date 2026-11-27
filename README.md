@@ -1,186 +1,116 @@
-# 📄 Resume Maker
+# RoleFit Resume Tailor
 
-A state-of-the-art, fully interactive **CV/Resume Builder** built with **Next.js 16**, **React 19**, and **Tailwind CSS v4**. Design professional, ATS-optimized resumes in minutes with a live split-screen preview, premium layout templates, and instant PDF export — all running 100% client-side with zero data leaving your browser.
+**Live Demo URL:** https://rolefit-resume-tailor.vercel.app/  
+**Quick Walkthrough:** See [`USER_MANUAL.md`](./USER_MANUAL.md) for a 30-second guided demo and CV upload instructions.
 
-> **Free · No Sign-up · 100% Private**
-
----
-
-## ✨ Features
-
-### 🖊️ Interactive Editor
-- **Accordion-based form sections** — Personal Info, Summary, Work Experience, Education, Projects, Skills, Languages & Certifications
-- **Dynamic list management** — Add, edit, remove, and reorder entries with inline bullet-point editors
-- **Tag-based inputs** — Type and press Enter to add skills, technologies, languages, and certifications as tags
-
-### 🎨 Design Customization
-- **3 Premium Templates**
-  - **Modern** — Two-column sidebar layout with structured skills panel and accent color bar
-  - **Executive** — Classic centered typography with serif-friendly formatting and horizontal dividers
-  - **Minimalist** — Clean grid alignment with section titles in a narrow left column for maximum white space
-- **8 Curated Accent Colors** + custom HEX color picker
-- **7 Font Families** — Inter, Outfit, Plus Jakarta Sans, Lora, Playfair Display, Merriweather, Roboto Mono
-- **3 Spacing Modes** — Compact, Normal, and Spacious
-
-### 📄 PDF Export
-- **Browser-native vector printing** via `@media print` — produces crisp, high-resolution PDFs
-- **ATS-friendly output** — fully selectable text, no images or canvas rendering
-- **A4-optimized layout** with proper page break handling
-
-### 💾 Data Persistence
-- **Auto-save** to `localStorage` — your progress is never lost
-- **JSON export/import** — download your resume data as a `.json` backup and restore it anytime
-- **Load sample data** — one-click demo population to preview templates instantly
-
-### 🔍 Preview Controls
-- **Live split-screen preview** — see changes reflected in real-time as you type
-- **Zoom controls** — Zoom In, Zoom Out, and Reset for comfortable viewing on any screen size
+RoleFit Resume Tailor is a **100% client-side** resume tailoring studio built for university students and early-career applicants. Upload your existing PDF/DOCX CV (or load a built-in demo profile), paste any job description, inspect your live **RoleFit Match Score (0–100%)**, insert tailored **XYZ / STAR impact bullets** in 1 click, run an **ATS Quick Check**, and export a crisp, selectable-text **1-page or 2-page A4 PDF**—with zero sign-up, zero API keys, and zero server uploads.
 
 ---
 
-## 🛠️ Tech Stack
+## Key Features
+
+### Live Job Description Match Engine
+- **Real-Time RoleFit Score (0–100%):** Paste any job description to calculate keyword coverage instantly as you edit.
+- **~275-Skill Synonym-Aware Dictionary:** Recognizes early-career Business, Finance, Consulting, VC/PE, Go-To-Market, Software Engineering, Product Management, Data, and Design skills—with alias normalization (e.g., `DCF` / `DCF Modeling`, `M&A` / `Mergers & Acquisitions`, `JS` / `JavaScript`, `A/B Testing` / `Split Testing`).
+- **Curated Target-Role Presets & Demo Profiles:**
+  - **Business & Finance (HSG):** *Strategy Consulting*, *M&A / IB Analyst*, *VC / PE Intern*, *Founder's Associate* — paired with fictional HSG student sample **Lukas Weber**.
+  - **Tech & Product:** *PM Intern*, *SWE Intern*, *Data / BA Intern* — paired with fictional tech student sample **Maya Lin**.
+
+### 1-Click Tailoring & ATS Quick Check
+- **Interactive Missing-Keyword Drawer:** Click any amber missing keyword to add it directly to **Skills** or insert 2–3 category-tailored **XYZ / STAR impact bullet** templates into any Experience or Project entry (with clear `[bracketed placeholder]` reminders so applicants replace placeholders with authentic metrics).
+- **ATS Quick Check:** Measures quantified-impact bullet coverage (including European formats such as `CHF 4.2M` and Swiss GPAs), tracks 1-page word/bullet density, and flags weak starter verbs (*"Worked on"*, *"Helped"*, *"Responsible for"*) with **1-click strong-verb upgrades**.
+
+### 100% Client-Side PDF & DOCX CV Upload
+- **Zero-Upload Local Parsing:** Uses `pdfjs-dist` (with a self-hosted local worker at `public/pdf.worker.min.mjs`) and `mammoth` strictly inside the browser—your CV never leaves your device.
+- **US & European / DACH / HSG Layout Support:** Handles standard US single-column resumes as well as European/DACH two-column date-rail CVs (`MM.YYYY` dates, international phone formats, pipe-delimited headers, and Swiss GPA scales).
+- **Import Preview & Paste Fallback:** Review detected sections before applying, or use the **Paste CV Text** tab for scanned/image-only PDFs.
+
+### ATS-Safe A4 Templates & Export
+- **3 Clean Templates:** **Modern**, **Executive**, and **Minimalist**—all supporting 8 accent color swatches + custom HEX picker, **7 self-hosted Google Fonts** (`Inter`, `Outfit`, `Plus Jakarta Sans`, `Lora`, `Playfair Display`, `Merriweather`, `Roboto Mono`), 3 spacing modes (*Compact*, *Normal*, *Relaxed*), drag-and-drop section ordering, and an optional **Show Profile Photo** toggle.
+- **1 Page | 2 Pages A4 Target Toggle:** Live height measurement with A4 `297mm` boundary guides and clean `break-inside: avoid` / `break-after: avoid` `@media print` rules for crisp selectable-text PDF export.
+- **Local Auto-Save & JSON Backup:** Persists drafts in browser `localStorage` with 1-click **Backup JSON** / **Import JSON** and **Clear All**.
+
+---
+
+## Tech Stack
 
 | Technology | Version | Purpose |
-|---|---|---|
-| **Next.js** | 16.2.7 | React framework with App Router |
-| **React** | 19.2.4 | UI component library |
-| **TypeScript** | 5.x | Type-safe development |
-| **Tailwind CSS** | 4.x | Utility-first styling |
-| **Lucide React** | 1.17.0 | Icon library |
-| **Google Fonts** | — | Web typography (7 font families) |
+| :--- | :--- | :--- |
+| **Next.js** | `16.2.7` | App Router + static export (`output: 'export'`) |
+| **React** | `19.2.4` | Interactive split-screen builder UI |
+| **TypeScript** | `5.x` | Type-safe matching, parsing, and resume models |
+| **Tailwind CSS** | `4.x` | Design tokens, layered component styling, print isolation |
+| **Lucide React** | `1.17.0` | UI and resume icons |
+| **pdfjs-dist** | `6.5.x` | Client-side PDF text & spatial coordinate extraction |
+| **mammoth** | `1.13.x` | Client-side `.docx` text extraction |
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
-```
-src/
-├── app/
-│   ├── builder/
-│   │   └── page.tsx          # Main builder workspace (editor + preview)
-│   ├── globals.css           # Design tokens, utilities, print styles
-│   ├── layout.tsx            # Root layout with font & metadata
-│   └── page.tsx              # Landing page
-├── components/
-│   ├── editor/
-│   │   ├── PersonalInfoForm.tsx
-│   │   ├── ExperienceForm.tsx
-│   │   ├── EducationForm.tsx
-│   │   ├── ProjectsForm.tsx
-│   │   └── SkillsForm.tsx
-│   ├── icons/
-│   │   └── BrandIcons.tsx    # Custom LinkedIn & GitHub SVG icons
-│   ├── preview/
-│   │   └── ResumePreview.tsx # Live preview with zoom & template switching
-│   └── templates/
-│       ├── ModernTemplate.tsx
-│       ├── ExecutiveTemplate.tsx
-│       └── MinimalistTemplate.tsx
-├── context/
-│   └── ResumeContext.tsx     # Global state, auto-save, JSON import/export
-└── types/
-    └── resume.ts             # TypeScript interfaces & sample data
+```text
+├── USER_MANUAL.md                     # Quick-start demo & CV upload guide
+├── LICENSE                            # MIT License with upstream attribution
+├── public/
+│   └── pdf.worker.min.mjs             # Self-hosted PDF.js worker (zero CDN calls)
+├── scripts/
+│   └── copy-pdf-worker.mjs            # postinstall sync for PDF.js worker
+└── src/
+    ├── app/
+    │   ├── page.tsx                   # RoleFit landing page
+    │   ├── builder/page.tsx           # Split-screen Edit Resume / RoleFit Tailor workspace
+    │   ├── layout.tsx                 # Self-hosted Google Fonts (next/font/google) & metadata
+    │   └── globals.css                # Tailwind v4 layers & @media print rules
+    ├── components/
+    │   ├── editor/                    # PersonalInfo, Experience, Projects, Education, Skills forms
+    │   ├── preview/ResumePreview.tsx  # Live A4 sheet, zoom, 1-Page / 2-Page fit tracker
+    │   ├── rolefit/                   # RoleFitPanel & CvImportModal (PDF/DOCX/Paste)
+    │   ├── templates/                 # Modern, Executive, and Minimalist A4 templates
+    │   └── ui/StaticLink.tsx          # Static-export-safe navigation link
+    ├── context/ResumeContext.tsx      # State management, localStorage, JSON backup/import
+    ├── lib/rolefit/                   # dictionary, analyzer, bulletTemplates, atsCheck,
+    │                                  # fileExtractors, cvParser, demoData
+    └── types/resume.ts                # Core TypeScript models
 ```
 
 ---
 
-## 🚀 Getting Started
+## Running Locally
 
-### Prerequisites
+Requires **Node.js 20+** and `npm`.
 
-- **Node.js** 18.x or later
-- **npm** (comes with Node.js)
+```bash
+npm install
+npm run dev
+```
 
-### Installation
+Open **`http://localhost:3000`** in your browser.
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/iam-neo/Resume-Maker.git
-   cd Resume-Maker
-   ```
+### Static Production Export
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server**
-   ```bash
-   npm run dev
-   ```
-
-4. **Open in your browser**
-   ```
-   http://localhost:3000
-   ```
-
-### Build for Production
+This project is configured with `output: 'export'` in `next.config.ts` for static hosting (Vercel, GitHub Pages, etc.):
 
 ```bash
 npm run build
-npm start
+```
+
+The compiled static site is generated in `out/` (including `out/pdf.worker.min.mjs` and all self-hosted `.woff2` fonts). To preview the static build locally:
+
+```bash
+npx serve out -l 4173
 ```
 
 ---
 
-## 📖 How to Use
+## Open-Source Foundation & Attribution
 
-1. **Visit the landing page** at `http://localhost:3000`
-2. **Click "Create Your Resume"** to open the builder workspace
-3. **Fill in your details** using the accordion form sections on the left panel
-4. **Customize the design** — select a template, pick an accent color, choose a font, and adjust spacing
-5. **Preview in real-time** — the right panel updates instantly as you type
-6. **Export as PDF** — click the "Export PDF" button to open your browser's print dialog and save as PDF
+RoleFit Resume Tailor is built on top of the open-source [`iam-neo/Resume-Maker`](https://github.com/iam-neo/Resume-Maker) project under the **MIT License** (see [`LICENSE`](./LICENSE)).
 
-> 💡 **Tip:** Click **"Demo Data"** in the toolbar to instantly populate the form with sample data and see how the templates look.
+- **From `iam-neo/Resume-Maker` (MIT base):** Next.js 16 / React 19 / Tailwind CSS v4 project shell, split-screen builder layout, accordion editor forms (`PersonalInfoForm`, `ExperienceForm`, `EducationForm`, `ProjectsForm`, `SkillsForm`), `ResumeContext` state & JSON backup/import, foundational `Modern`/`Executive`/`Minimalist` templates, and `@media print` A4 printing pattern.
+- **Built for RoleFit Resume Tailor:** Real-time Job Description keyword & synonym match engine (`src/lib/rolefit/dictionary.ts`, `analyzer.ts`), 1-click XYZ/STAR impact-bullet inserter (`bulletTemplates.ts`), ATS Quick Check & 1-click weak-verb rewriter (`atsCheck.ts`), 100% client-side PDF/DOCX CV upload & DACH/HSG two-column date-rail parser (`fileExtractors.ts`, `cvParser.ts`, `CvImportModal.tsx`), RoleFit Tailor workspace & HSG/Tech demo presets (`RoleFitPanel.tsx`, `demoData.ts`), compact 1-page / 2-page A4 target toggle with clean multi-page print breaks, self-hosted `next/font/google` typography, Tailwind v4 `@layer` styling fixes, and static-export link handling (`StaticLink.tsx`).
 
 ---
 
-## 🖨️ PDF Export Guide
+## Privacy
 
-This project uses browser-native print styling for PDF generation, ensuring vector-quality text output:
-
-1. Click the **"Export PDF"** button in the builder toolbar
-2. In the print dialog:
-   - Set **Destination** to "Save as PDF"
-   - Set **Paper size** to "A4"
-   - Set **Margins** to "None"
-   - Enable **"Background graphics"** for colored elements
-3. Click **Save**
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Here's how you can help:
-
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'feat: add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
-
----
-
-## 📜 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
----
-
-## 🙏 Acknowledgments
-
-- [Lucide Icons](https://lucide.dev/) — Beautiful open-source icon library
-- [Google Fonts](https://fonts.google.com/) — Free web typography
-- [Next.js](https://nextjs.org/) — The React framework for the web
-- [Tailwind CSS](https://tailwindcss.com/) — Utility-first CSS framework
-
----
-
-<div align="center">
-
-**Built with ❤️ using Next.js**
-
-[Report Bug](https://github.com/iam-neo/Resume-Maker/issues) · [Request Feature](https://github.com/iam-neo/Resume-Maker/issues)
-
-</div>
+All CV file parsing, Job Description matching, and ATS checks execute **100% locally in your browser**. No resume files, personal information, or job descriptions are ever transmitted to a server.
