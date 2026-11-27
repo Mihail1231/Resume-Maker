@@ -13,13 +13,15 @@ const A4_HEIGHT_PX = 1123;
 const A4_FIT_TOLERANCE_PX = 4;
 
 const fontMap: Record<string, string> = {
-  Inter: 'font-sans',
-  Outfit: '"Outfit", sans-serif',
-  'Plus Jakarta Sans': '"Plus Jakarta Sans", sans-serif',
-  Lora: '"Lora", serif',
-  'Playfair Display': '"Playfair Display", serif',
-  Merriweather: '"Merriweather", serif',
-  'Roboto Mono': '"Roboto Mono", monospace',
+  Inter: 'var(--font-inter), "Inter", ui-sans-serif, system-ui, sans-serif',
+  Outfit: 'var(--font-outfit), "Outfit", ui-sans-serif, system-ui, sans-serif',
+  'Plus Jakarta Sans':
+    'var(--font-plus-jakarta-sans), "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif',
+  Lora: 'var(--font-lora), "Lora", Georgia, "Times New Roman", serif',
+  'Playfair Display':
+    'var(--font-playfair-display), "Playfair Display", Georgia, "Times New Roman", serif',
+  Merriweather: 'var(--font-merriweather), "Merriweather", Georgia, "Times New Roman", serif',
+  'Roboto Mono': 'var(--font-roboto-mono), "Roboto Mono", ui-monospace, monospace',
 };
 
 const spacingMap: Record<SpacingOption, SpacingStyles> = {
@@ -80,7 +82,7 @@ export default function ResumePreview() {
   const { template, fontFamily, spacing } = resumeData;
 
   const activeSpacing = spacingMap[spacing] || spacingMap.compact;
-  const activeFont = fontMap[fontFamily] || '"Inter", sans-serif';
+  const activeFont = fontMap[fontFamily] || fontMap.Inter;
 
   useEffect(() => {
     const el = contentRef.current;
@@ -94,7 +96,19 @@ export default function ResumePreview() {
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(el);
-    return () => observer.disconnect();
+
+    const fontSet = typeof document !== 'undefined' ? document.fonts : undefined;
+    let active = true;
+    fontSet?.ready.then(() => {
+      if (active) measure();
+    });
+    fontSet?.addEventListener?.('loadingdone', measure);
+
+    return () => {
+      active = false;
+      observer.disconnect();
+      fontSet?.removeEventListener?.('loadingdone', measure);
+    };
   }, [resumeData, template, spacing, fontFamily]);
 
   const targetLimitPx = pageTarget * A4_HEIGHT_PX;
@@ -231,6 +245,8 @@ export default function ResumePreview() {
       <div className="flex-1 overflow-auto bg-surface/50 p-6 flex justify-center items-start">
         <div
           className="resume-sheet"
+          data-font-family={fontFamily}
+          data-template={template}
           style={{
             fontFamily: activeFont,
             transform: `scale(${zoom})`,

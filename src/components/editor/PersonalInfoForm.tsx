@@ -119,7 +119,10 @@ export default function PersonalInfoForm() {
               {label}
             </label>
             <div className="relative">
-              <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+              <Icon
+                aria-hidden="true"
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted"
+              />
               <input
                 id={`personal-${key}`}
                 type="text"

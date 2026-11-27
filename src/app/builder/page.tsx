@@ -478,8 +478,11 @@ function BuilderWorkspace() {
                 {/* Fonts & Spacing */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="input-label">Typography Style</label>
+                    <label htmlFor="resume-font-select" className="input-label">
+                      Typography Style
+                    </label>
                     <select
+                      id="resume-font-select"
                       value={resumeData.fontFamily}
                       onChange={(e) => setFontFamily(e.target.value)}
                       className="input-field"
@@ -493,8 +496,11 @@ function BuilderWorkspace() {
                   </div>
 
                   <div>
-                    <label className="input-label">Line & Item Spacing</label>
+                    <label htmlFor="resume-spacing-select" className="input-label">
+                      Line &amp; Item Spacing
+                    </label>
                     <select
+                      id="resume-spacing-select"
                       value={resumeData.spacing}
                       onChange={(e) => setSpacing(e.target.value as SpacingOption)}
                       className="input-field"

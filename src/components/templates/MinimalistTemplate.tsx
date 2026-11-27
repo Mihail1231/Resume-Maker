@@ -20,6 +20,7 @@ export default function MinimalistTemplate({ data, s }: TemplateProps) {
     skills,
     languages,
     certifications,
+    themeColor,
     showProfileImage,
   } = data;
 
@@ -103,8 +104,8 @@ export default function MinimalistTemplate({ data, s }: TemplateProps) {
         return (
           <div key="summary" className={`grid ${gridCols} resume-section`}>
             <h3
-              className="font-bold text-slate-400 uppercase tracking-wider text-right break-after-avoid resume-section-heading"
-              style={{ fontSize: s.fontXs, lineHeight: '1.3' }}
+              className="font-bold uppercase tracking-wider text-right break-after-avoid resume-section-heading"
+              style={{ color: themeColor, fontSize: s.fontXs, lineHeight: '1.3' }}
             >
               Profile
             </h3>
@@ -122,8 +123,8 @@ export default function MinimalistTemplate({ data, s }: TemplateProps) {
         return (
           <div key="experience" className={`grid ${gridCols} resume-section`}>
             <h3
-              className="font-bold text-slate-400 uppercase tracking-wider text-right break-after-avoid resume-section-heading"
-              style={{ fontSize: s.fontXs, lineHeight: '1.3' }}
+              className="font-bold uppercase tracking-wider text-right break-after-avoid resume-section-heading"
+              style={{ color: themeColor, fontSize: s.fontXs, lineHeight: '1.3' }}
             >
               Experience
             </h3>
@@ -189,8 +190,8 @@ export default function MinimalistTemplate({ data, s }: TemplateProps) {
         return (
           <div key="projects" className={`grid ${gridCols} resume-section`}>
             <h3
-              className="font-bold text-slate-400 uppercase tracking-wider text-right break-after-avoid resume-section-heading"
-              style={{ fontSize: s.fontXs, lineHeight: '1.3' }}
+              className="font-bold uppercase tracking-wider text-right break-after-avoid resume-section-heading"
+              style={{ color: themeColor, fontSize: s.fontXs, lineHeight: '1.3' }}
             >
               Projects
             </h3>
@@ -260,8 +261,8 @@ export default function MinimalistTemplate({ data, s }: TemplateProps) {
         return (
           <div key="education" className={`grid ${gridCols} resume-section`}>
             <h3
-              className="font-bold text-slate-400 uppercase tracking-wider text-right break-after-avoid resume-section-heading"
-              style={{ fontSize: s.fontXs, lineHeight: '1.3' }}
+              className="font-bold uppercase tracking-wider text-right break-after-avoid resume-section-heading"
+              style={{ color: themeColor, fontSize: s.fontXs, lineHeight: '1.3' }}
             >
               Education
             </h3>
@@ -331,8 +332,8 @@ export default function MinimalistTemplate({ data, s }: TemplateProps) {
         return (
           <div key="details" className={`grid ${gridCols} resume-section`}>
             <h3
-              className="font-bold text-slate-400 uppercase tracking-wider text-right break-after-avoid resume-section-heading"
-              style={{ fontSize: s.fontXs, lineHeight: '1.3' }}
+              className="font-bold uppercase tracking-wider text-right break-after-avoid resume-section-heading"
+              style={{ color: themeColor, fontSize: s.fontXs, lineHeight: '1.3' }}
             >
               Details
             </h3>
@@ -371,9 +372,10 @@ export default function MinimalistTemplate({ data, s }: TemplateProps) {
     <div className={`${s.pagePadding} text-slate-800 flex flex-col bg-white`}>
       {/* Compact Horizontal Header */}
       <div
-        className={`flex items-center justify-between gap-4 border-b border-slate-200 ${
+        className={`flex items-center justify-between gap-4 border-b ${
           s.isCompact ? 'pb-2 mb-2.5' : 'pb-3.5 mb-4'
         }`}
+        style={{ borderBottomColor: `${themeColor}40` }}
       >
         <div className="min-w-0 flex-1">
           <h1
@@ -384,8 +386,8 @@ export default function MinimalistTemplate({ data, s }: TemplateProps) {
           </h1>
           {displayHeadline && (
             <p
-              className="font-medium text-slate-600 mt-0.5"
-              style={{ fontSize: s.fontBase, lineHeight: '1.25' }}
+              className="font-medium mt-0.5"
+              style={{ color: themeColor, fontSize: s.fontBase, lineHeight: '1.25' }}
             >
               {displayHeadline}
             </p>
